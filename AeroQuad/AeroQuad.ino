@@ -46,8 +46,8 @@
 //#define ArduCopter          // ArduPilot Mega (APM) with Oilpan Sensor Board
 //#define AeroQuadMega_CHR6DM // Clean Arduino Mega with CHR6DM as IMU/heading ref.
 //#define APM_OP_CHR6DM       // ArduPilot Mega with CHR6DM as IMU/heading ref., Oilpan for barometer (just uncomment AltitudeHold for baro), and voltage divider
-#define ArduCopter_AQ        // ArduPilot Mega with AeroQuad Shield v2.0 compatible sensor board
-//#define MapleCopter_CSG
+//#define ArduCopter_AQ       // ArduPilot Mega with AeroQuad Shield v2.0 compatible sensor board
+//#define MapleCopter_CSG     // MapleR5 with CSG sensor board (ITG3200, BMA180, ) 
 
 /****************************************************************************
  *********************** Define Flight Configuration ************************
