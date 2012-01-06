@@ -988,7 +988,6 @@
   #define LED_Red 35
   #define LED_Yellow 36
 
-  #include <APM_ADC.h>
   #include <APM_RC.h>
   #include <Device_I2C.h>
 
