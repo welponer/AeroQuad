@@ -46,8 +46,8 @@
 //#define ArduCopter          // ArduPilot Mega (APM) with Oilpan Sensor Board
 //#define AeroQuadMega_CHR6DM // Clean Arduino Mega with CHR6DM as IMU/heading ref.
 //#define APM_OP_CHR6DM       // ArduPilot Mega with CHR6DM as IMU/heading ref., Oilpan for barometer (just uncomment AltitudeHold for baro), and voltage divider
-//#define ArduCopter_AQ       // ArduPilot Mega with AeroQuad Shield v2.0 compatible sensor board
-//#define MapleCopter_CSG     // MapleR5 with CSG sensor board (ITG3200, BMA180, ) 
+#define ArduCopter_AQ       // ArduPilot Mega with AeroQuad Shield v2.0 compatible sensor board
+//#define MapleCopter_CSG     // MapleR5 with CSG sensor board (ITG3200, BMA180,... ) 
 
 /****************************************************************************
  *********************** Define Flight Configuration ************************
@@ -87,8 +87,8 @@
 // If you only want DCM, then don't define either of the below
 // Use FlightAngleARG if you do not have a magnetometer, use DCM if you have a magnetometer installed
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//#define FlightAngleMARG // EXPERIMENTAL!  Fly at your own risk! Use this if you have a magnetometer installed and enabled HeadingMagHold above
-#define FlightAngleARG // Use this if you do not have a magnetometer installed
+#define FlightAngleMARG // EXPERIMENTAL!  Fly at your own risk! Use this if you have a magnetometer installed and enabled HeadingMagHold above
+//#define FlightAngleARG // Use this if you do not have a magnetometer installed
 
 //
 // *******************************************************************************************************************************
