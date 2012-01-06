@@ -77,9 +77,7 @@ void initializeAccel() {
   
 void measureAccel() {
 
-  Wire.beginTransmission(ACCEL_ADDRESS);
-  Wire.write(ACCEL_READ_ROLL_ADDRESS);
-  Wire.endTransmission();
+  sendByteI2C(ACCEL_ADDRESS, ACCEL_READ_ROLL_ADDRESS);
   Wire.requestFrom(ACCEL_ADDRESS, 6);
   
   for (byte axis = XAXIS; axis <= ZAXIS; axis++) {
@@ -89,9 +87,7 @@ void measureAccel() {
 
 void measureAccelSum() {
 
-  Wire.beginTransmission(ACCEL_ADDRESS);
-  Wire.write(ACCEL_READ_ROLL_ADDRESS);
-  Wire.endTransmission();
+  sendByteI2C(ACCEL_ADDRESS, ACCEL_READ_ROLL_ADDRESS);
   Wire.requestFrom(ACCEL_ADDRESS, 6);
   
   for (byte axis = XAXIS; axis <= ZAXIS; axis++) {
