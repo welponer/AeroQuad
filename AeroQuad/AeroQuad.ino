@@ -95,8 +95,8 @@
 // Warning:  If you enable HeadingHold or AltitudeHold and do not have the correct sensors connected, the flight software may hang
 // *******************************************************************************************************************************
 #define HeadingMagHold // Enables Magnetometer, gets automatically selected if CHR6DM is defined
-#define AltitudeHoldBaro // Enables BMP085 Barometer (experimental, use at your own risk)
-#define AltitudeHoldRangeFinder // EXPERIMENTAL : Enable altitude hold with range finder
+//#define AltitudeHoldBaro // Enables BMP085 Barometer (experimental, use at your own risk)
+//#define AltitudeHoldRangeFinder // EXPERIMENTAL : Enable altitude hold with range finder
 //#define RateModeOnly // Use this if you only have a gyro sensor, this will disable any attitude modes.
 
 //
@@ -977,6 +977,77 @@
       measureGyro();
       measureAccel();
     }
+  }
+#endif
+
+
+
+#ifdef ArduCopter_AQ
+  #define LED_Green 37
+  #define LED_Red 35
+  #define LED_Yellow 36
+
+  #include <APM_ADC.h>
+  #include <APM_RC.h>
+  #include <Device_I2C.h>
+
+  // Gyroscope declaration
+  #include <Gyroscope_ITG3200.h>
+
+  // Accelerometer declaration
+  #include <Accelerometer_BMA180.h>
+
+  // Receiver Declaration
+  #define RECEIVER_APM
+
+  // Motor Declaration
+  #define MOTOR_APM
+
+  // heading mag hold declaration
+  #ifdef HeadingMagHold
+    #define HMC5843
+    //#define HMC588L
+  #endif
+  #ifdef AltitudeHoldRangeFinder
+    #define XLMAXSONAR 
+  #endif
+
+
+  // Altitude declaration
+  #ifdef AltitudeHoldBaro
+    #define BMP085
+  #endif
+
+  // Battery monitor declaration
+  #ifdef BattMonitor
+    struct BatteryData batteryData[] = {
+      BM_DEFINE_BATTERY_V(BattCellCount, 0, ((4.98 / 1024.0) * (30.48 + 15.24) / 15.24), 0.0)};
+  #endif
+
+  #undef CameraControl
+  #undef OSD
+
+  
+  /**
+   * Put ArduCopter specific intialization need here
+   */
+  void initPlatform() {
+    pinMode(LED_Red, OUTPUT);
+    pinMode(LED_Yellow, OUTPUT);
+    pinMode(LED_Green, OUTPUT);
+
+    initRC();
+
+    Wire.begin();
+    TWBR = 12;
+  }
+
+  /**
+   * Measure critical sensors
+   */
+  void measureCriticalSensors() {
+    measureAccelSum();
+    measureGyroSum();
   }
 #endif
 
