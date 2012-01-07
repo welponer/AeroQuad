@@ -71,7 +71,7 @@ void initializeAccel() {
   data = readByteI2C(ACCEL_ADDRESS);
   data &= 0xF1;
   //data |= 0x04; // Set range select bits for +/-2g
-  data |= 0x08;  // Set range select bits for +/-4g
+  data |= 0x08; // set range select bits for +/-4g
   updateRegisterI2C(ACCEL_ADDRESS, ACCEL_OFFSET_REGISTER, data);	
 }
   
