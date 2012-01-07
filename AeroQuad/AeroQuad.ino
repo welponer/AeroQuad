@@ -1043,11 +1043,7 @@
     headingHoldConfig = ON;
     receiverSlope[THROTTLE] = 0.5;
     receiverOffset[THROTTLE] = 500.0;
-   
-    accelScaleFactor[XAXIS] = G_2_MPS2(1.0/4096.0);  //  g per LSB @ +/- 2g range
-    accelScaleFactor[YAXIS] = accelScaleFactor[XAXIS];
-    accelScaleFactor[ZAXIS] = accelScaleFactor[XAXIS];
-   
+
     PID[RATE_XAXIS_PID_IDX].P = 35.0;
     PID[RATE_XAXIS_PID_IDX].I = 0.0;
     PID[RATE_XAXIS_PID_IDX].D = -5*PID[RATE_XAXIS_PID_IDX].P;
