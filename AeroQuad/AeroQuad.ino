@@ -83,15 +83,15 @@
 // If you only want DCM, then don't define either of the below
 // Use FlightAngleARG if you do not have a magnetometer, use DCM if you have a magnetometer installed
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#define FlightAngleMARG // EXPERIMENTAL!  Fly at your own risk! Use this if you have a magnetometer installed and enabled HeadingMagHold above
-//#define FlightAngleARG // Use this if you do not have a magnetometer installed
+//#define FlightAngleMARG // EXPERIMENTAL!  Fly at your own risk! Use this if you have a magnetometer installed and enabled HeadingMagHold above
+#define FlightAngleARG // Use this if you do not have a magnetometer installed
 
 //
 // *******************************************************************************************************************************
 // Optional Sensors
 // Warning:  If you enable HeadingHold or AltitudeHold and do not have the correct sensors connected, the flight software may hang
 // *******************************************************************************************************************************
-#define HeadingMagHold // Enables Magnetometer, gets automatically selected if CHR6DM is defined
+//#define HeadingMagHold // Enables Magnetometer, gets automatically selected if CHR6DM is defined
 //#define AltitudeHoldBaro // Enables BMP085 Barometer (experimental, use at your own risk)
 //#define AltitudeHoldRangeFinder // EXPERIMENTAL : Enable altitude hold with range finder
 //#define RateModeOnly // Use this if you only have a gyro sensor, this will disable any attitude modes.
@@ -1025,7 +1025,7 @@
   #undef OSD
 
   /**
-   * Put ArduCopter specific intialization need here
+   * Put ArduCopter_AQ specific intialization need here
    */
   void initPlatform() {
     pinMode(LED_Red, OUTPUT);
@@ -1036,7 +1036,9 @@
 
     Wire.begin();
     TWBR = 12;
-    
+  }
+  
+  void initPlatformEEPROM(void) {
     flightMode = ATTITUDE_FLIGHT_MODE;
     headingHoldConfig = ON;
     receiverSlope[THROTTLE] = 0.5;

@@ -172,6 +172,10 @@ void initializeEEPROM() {
     maxRangeFinderRange = 3.0;
     minRangeFinderRange = 0.25;
   #endif
+  
+  #if defined(ArduCopter_AQ)
+    initPlatformEEPROM();
+  #endif
 }
 
 void readEEPROM() {
