@@ -83,15 +83,15 @@
 // If you only want DCM, then don't define either of the below
 // Use FlightAngleARG if you do not have a magnetometer, use DCM if you have a magnetometer installed
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//#define FlightAngleMARG // EXPERIMENTAL!  Fly at your own risk! Use this if you have a magnetometer installed and enabled HeadingMagHold above
-#define FlightAngleARG // Use this if you do not have a magnetometer installed
+#define FlightAngleMARG // EXPERIMENTAL!  Fly at your own risk! Use this if you have a magnetometer installed and enabled HeadingMagHold above
+//#define FlightAngleARG // Use this if you do not have a magnetometer installed
 
 //
 // *******************************************************************************************************************************
 // Optional Sensors
 // Warning:  If you enable HeadingHold or AltitudeHold and do not have the correct sensors connected, the flight software may hang
 // *******************************************************************************************************************************
-//#define HeadingMagHold // Enables Magnetometer, gets automatically selected if CHR6DM is defined
+#define HeadingMagHold // Enables Magnetometer, gets automatically selected if CHR6DM is defined
 //#define AltitudeHoldBaro // Enables BMP085 Barometer (experimental, use at your own risk)
 //#define AltitudeHoldRangeFinder // EXPERIMENTAL : Enable altitude hold with range finder
 //#define RateModeOnly // Use this if you only have a gyro sensor, this will disable any attitude modes.
@@ -1043,7 +1043,12 @@
     headingHoldConfig = ON;
     receiverSlope[THROTTLE] = 0.5;
     receiverOffset[THROTTLE] = 500.0;
-
+     
+    //accelScaleFactor[XAXIS] = G_2_MPS2(1.0/4096.0);  //  g per LSB @ +/- 2g range
+    accelScaleFactor[XAXIS] = G_2_MPS2(1.0/2048.0);  //  g per LSB @ +/- 4g range
+    accelScaleFactor[YAXIS] = accelScaleFactor[XAXIS];
+    accelScaleFactor[ZAXIS] = accelScaleFactor[XAXIS];
+    
     PID[RATE_XAXIS_PID_IDX].P = 35.0;
     PID[RATE_XAXIS_PID_IDX].I = 0.0;
     PID[RATE_XAXIS_PID_IDX].D = -5*PID[RATE_XAXIS_PID_IDX].P;
