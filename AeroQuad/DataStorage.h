@@ -311,6 +311,7 @@ void writeEEPROM(){
     writeFloat(maxRangeFinderRange, RANGE_FINDER_MAX_ADR);
     writeFloat(minRangeFinderRange, RANGE_FINDER_MIN_ADR);
   #endif
+
   sei(); // Restart interrupts
 }
 

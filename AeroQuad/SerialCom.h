@@ -207,10 +207,13 @@ void readSerialCommand() {
       break;
       
     case 'U': // Range Finder
-    #ifdef AltitudeHoldRangeFinder
-      maxRangeFinderRange = readFloatSerial();
-      minRangeFinderRange = readFloatSerial();
-    #endif
+      #ifdef AltitudeHoldRangeFinder
+        maxRangeFinderRange = readFloatSerial();
+        minRangeFinderRange = readFloatSerial();
+      #else
+        readFloatSerial();
+        readFloatSerial();
+      #endif
       break;
 
     case 'W': // Write all user configurable values to EEPROM
@@ -538,10 +541,13 @@ void sendSerialTelemetry() {
     break;
 
   case 'u': // Send range finder values
-  #ifdef AltitudeHoldRangeFinder
-    PrintValueComma(maxRangeFinderRange);
-    SERIAL_PRINTLN(minRangeFinderRange);
-  #endif
+    #ifdef AltitudeHoldRangeFinder
+      PrintValueComma(maxRangeFinderRange);
+      SERIAL_PRINTLN(minRangeFinderRange);
+    #else
+      PrintValueComma(0);
+      SERIAL_PRINTLN(0);
+    #endif
     queryType = 'X';
     break;
 
