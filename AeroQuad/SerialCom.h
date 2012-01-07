@@ -207,7 +207,7 @@ void readSerialCommand() {
       break;
       
     case 'U': // Range Finder
-      #ifdef AltitudeHoldRangeFinder
+      #if defined (AltitudeHoldRangeFinder)
         maxRangeFinderRange = readFloatSerial();
         minRangeFinderRange = readFloatSerial();
       #else
@@ -541,7 +541,7 @@ void sendSerialTelemetry() {
     break;
 
   case 'u': // Send range finder values
-    #ifdef AltitudeHoldRangeFinder
+    #if defined (AltitudeHoldRangeFinder)
       PrintValueComma(maxRangeFinderRange);
       SERIAL_PRINTLN(minRangeFinderRange);
     #else

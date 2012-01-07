@@ -995,7 +995,7 @@
   #include <Accelerometer_BMA180.h>
 
   // Receiver Declaration
-  #define RECEIVER_APM
+  //#define RECEIVER_APM
   #include <Receiver_APM.h>
   
   // Motor Declaration
@@ -1043,7 +1043,11 @@
     headingHoldConfig = ON;
     receiverSlope[THROTTLE] = 0.5;
     receiverOffset[THROTTLE] = 500.0;
-    
+   
+    accelScaleFactor[XAXIS] = G_2_MPS2(1.0/4096.0);  //  g per LSB @ +/- 2g range
+    accelScaleFactor[YAXIS] = accelScaleFactor[XAXIS];
+    accelScaleFactor[ZAXIS] = accelScaleFactor[XAXIS];
+   
     PID[RATE_XAXIS_PID_IDX].P = 35.0;
     PID[RATE_XAXIS_PID_IDX].I = 0.0;
     PID[RATE_XAXIS_PID_IDX].D = -5*PID[RATE_XAXIS_PID_IDX].P;
@@ -1067,7 +1071,7 @@
     PID[ATTITUDE_GYRO_XAXIS_PID_IDX].D = PID[RATE_XAXIS_PID_IDX].D;
     PID[ATTITUDE_GYRO_YAXIS_PID_IDX].P = PID[RATE_YAXIS_PID_IDX].P;
     PID[ATTITUDE_GYRO_YAXIS_PID_IDX].I = PID[RATE_YAXIS_PID_IDX].I;
-    PID[ATTITUDE_GYRO_YAXIS_PID_IDX].D = PID[RATE_YAXIS_PID_IDX].D;
+    PID[ATTITUDE_GYRO_YAXIS_PID_IDX].D = PID[RATE_YAXIS_PID_IDX].D; 
   }
 
   /**
@@ -1124,7 +1128,7 @@
   // Battery monitor declaration
   #ifdef BattMonitor
     struct BatteryData batteryData[] = {
-      BM_DEFINE_BATTERY_V(BattCellCount, 0, ((4.98 / 1024.0) * (30.48 + 15.24) / 15.24), 0.0)};
+      BM_DEFINE_BATTERY_V(3, A0, ((4.98 / 1024.0) * (30.48 + 15.24) / 15.24), 0.0)};
   #endif
 
   #undef CameraControl
@@ -1558,6 +1562,7 @@ void loop () {
       #if defined AltitudeHoldBaro
         measureBaro(); // defined in altitude.h
       #endif
+      
       #ifdef AltitudeHoldRangeFinder
         evaluateDistanceFromSample(ALTITUDE_RANGE_FINDER_INDEX);
       #endif

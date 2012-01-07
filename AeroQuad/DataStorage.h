@@ -168,7 +168,7 @@ void initializeEEPROM() {
   #endif
 
   // Range Finder
-  #ifdef AltitudeHoldRangeFinder
+  #if defined (AltitudeHoldRangeFinder)
     maxRangeFinderRange = 3.0;
     minRangeFinderRange = 0.25;
   #endif
@@ -240,10 +240,10 @@ void readEEPROM() {
   headingHoldConfig = readFloat(HEADINGHOLD_ADR);
 
   // Range Finder
-  #ifdef AltitudeHoldRangeFinder
+  #if defined (AltitudeHoldRangeFinder)
     maxRangeFinderRange = readFloat(RANGE_FINDER_MAX_ADR);
     minRangeFinderRange = readFloat(RANGE_FINDER_MIN_ADR);
-  #endif
+  #endif     
 }
 
 void writeEEPROM(){
@@ -311,9 +311,12 @@ void writeEEPROM(){
   #endif
 
   // Range Finder
-  #ifdef AltitudeHoldRangeFinder
+  #if defined (AltitudeHoldRangeFinder)
     writeFloat(maxRangeFinderRange, RANGE_FINDER_MAX_ADR);
     writeFloat(minRangeFinderRange, RANGE_FINDER_MIN_ADR);
+  #else
+    writeFloat(0, RANGE_FINDER_MAX_ADR);
+    writeFloat(0, RANGE_FINDER_MIN_ADR);
   #endif
 
   sei(); // Restart interrupts
