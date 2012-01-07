@@ -46,8 +46,10 @@
 //#define ArduCopter          // ArduPilot Mega (APM) with Oilpan Sensor Board
 //#define AeroQuadMega_CHR6DM // Clean Arduino Mega with CHR6DM as IMU/heading ref.
 //#define APM_OP_CHR6DM       // ArduPilot Mega with CHR6DM as IMU/heading ref., Oilpan for barometer (just uncomment AltitudeHold for baro), and voltage divider
-//#define ArduCopter_AQ       // ArduPilot Mega with AeroQuad Shield v2.0 compatible sensor board
-#define MapleCopter_CSG     // MapleR5 with CSG sensor board (ITG3200, BMA180,... ) 
+#define ArduCopter_AQ       // ArduPilot Mega with AeroQuad Shield v2.0 compatible sensor board
+
+// STM32 platform
+//#define MapleCopter_CSG     // MapleR5 with CSG sensor board (ITG3200, BMA180,... ) 
 
 /****************************************************************************
  *********************** Define Flight Configuration ************************
@@ -95,7 +97,7 @@
 // Optional Sensors
 // Warning:  If you enable HeadingHold or AltitudeHold and do not have the correct sensors connected, the flight software may hang
 // *******************************************************************************************************************************
-//#define HeadingMagHold // Enables Magnetometer, gets automatically selected if CHR6DM is defined
+#define HeadingMagHold // Enables Magnetometer, gets automatically selected if CHR6DM is defined
 //#define AltitudeHoldBaro // Enables BMP085 Barometer (experimental, use at your own risk)
 //#define AltitudeHoldRangeFinder // EXPERIMENTAL : Enable altitude hold with range finder
 //#define RateModeOnly // Use this if you only have a gyro sensor, this will disable any attitude modes.
@@ -106,7 +108,7 @@
 // For more information on how to setup Battery Monitor please refer to http://aeroquad.com/showwiki.php?title=BatteryMonitor+h
 // *******************************************************************************************************************************
 #define BattMonitor            // Enable Battery monitor
-#define BattMonitorAutoDescent // if you want the craft to auto descent when the battery reach the alarm voltage
+//#define BattMonitorAutoDescent // if you want the craft to auto descent when the battery reach the alarm voltage
 #define BattCellCount 3        // set number of Cells (0 == autodetect 1S-3S)
 #define POWERED_BY_VIN         // Uncomment this if your v2.x is powered directly by the vin/gnd of the arduino
 
@@ -985,9 +987,9 @@
 
 
 #ifdef ArduCopter_AQ
-  #define LED_Green 37
-  #define LED_Red 35
-  #define LED_Yellow 36
+  #define LED_Green A8
+  #define LED_Red A10
+  #define LED_Yellow A12  // A14
 
   #include <APM_RC.h>
   #include <Device_I2C.h>
@@ -1000,7 +1002,8 @@
 
   // Receiver Declaration
   #define RECEIVER_APM
-
+  #include <Receiver_APM.h>
+  
   // Motor Declaration
   #define MOTOR_APM
 
@@ -1013,7 +1016,6 @@
     #define XLMAXSONAR 
   #endif
 
-
   // Altitude declaration
   #ifdef AltitudeHoldBaro
     #define BMP085
@@ -1022,13 +1024,12 @@
   // Battery monitor declaration
   #ifdef BattMonitor
     struct BatteryData batteryData[] = {
-      BM_DEFINE_BATTERY_V(BattCellCount, 0, ((4.98 / 1024.0) * (30.48 + 15.24) / 15.24), 0.0)};
+      BM_DEFINE_BATTERY_V(3, A0, ((4.98 / 1024.0) * (30.48 + 15.24) / 15.24), 0.0)};
   #endif
 
   #undef CameraControl
   #undef OSD
 
-  
   /**
    * Put ArduCopter specific intialization need here
    */
@@ -1041,6 +1042,36 @@
 
     Wire.begin();
     TWBR = 12;
+    
+    flightMode = ATTITUDE_FLIGHT_MODE;
+    headingHoldConfig = ON;
+    receiverSlope[THROTTLE] = 0.5;
+    receiverOffset[THROTTLE] = 500.0;
+    
+    PID[RATE_XAXIS_PID_IDX].P = 35.0;
+    PID[RATE_XAXIS_PID_IDX].I = 0.0;
+    PID[RATE_XAXIS_PID_IDX].D = -5*PID[RATE_XAXIS_PID_IDX].P;
+    PID[RATE_YAXIS_PID_IDX].P = PID[RATE_XAXIS_PID_IDX].P;
+    PID[RATE_YAXIS_PID_IDX].I = PID[RATE_XAXIS_PID_IDX].I;
+    PID[RATE_YAXIS_PID_IDX].D = PID[RATE_XAXIS_PID_IDX].D;
+    PID[ZAXIS_PID_IDX].P = 2*PID[RATE_XAXIS_PID_IDX].P;
+    PID[ZAXIS_PID_IDX].I = 0*5.0;
+    PID[ZAXIS_PID_IDX].D = -4*PID[ZAXIS_PID_IDX].P;
+    PID[ATTITUDE_XAXIS_PID_IDX].P = PID[RATE_XAXIS_PID_IDX].P/10;
+    PID[ATTITUDE_XAXIS_PID_IDX].I = 0;
+    PID[ATTITUDE_XAXIS_PID_IDX].D = 0.0;
+    PID[ATTITUDE_YAXIS_PID_IDX].P = PID[ATTITUDE_XAXIS_PID_IDX].P;
+    PID[ATTITUDE_YAXIS_PID_IDX].I = PID[ATTITUDE_XAXIS_PID_IDX].I;
+    PID[ATTITUDE_YAXIS_PID_IDX].D = PID[ATTITUDE_XAXIS_PID_IDX].D;
+    PID[HEADING_HOLD_PID_IDX].P = 3.0;
+    PID[HEADING_HOLD_PID_IDX].I = 0.1;
+    PID[HEADING_HOLD_PID_IDX].D = 0.0;  
+    PID[ATTITUDE_GYRO_XAXIS_PID_IDX].P = PID[RATE_XAXIS_PID_IDX].P;
+    PID[ATTITUDE_GYRO_XAXIS_PID_IDX].I = PID[RATE_XAXIS_PID_IDX].I;
+    PID[ATTITUDE_GYRO_XAXIS_PID_IDX].D = PID[RATE_XAXIS_PID_IDX].D;
+    PID[ATTITUDE_GYRO_YAXIS_PID_IDX].P = PID[RATE_YAXIS_PID_IDX].P;
+    PID[ATTITUDE_GYRO_YAXIS_PID_IDX].I = PID[RATE_YAXIS_PID_IDX].I;
+    PID[ATTITUDE_GYRO_YAXIS_PID_IDX].D = PID[RATE_YAXIS_PID_IDX].D;
   }
 
   /**
@@ -1063,6 +1094,7 @@
   
   // Serial
   #define Serial SerialUSB
+  #define SerialUSB.begin(...); SerialUSB.begin();
   
   #include <Device_I2C.h>
 
@@ -1289,8 +1321,7 @@
  * Aeroquad
  */
 void setup() {
-  //SERIAL_BEGIN(BAUD);
-  SERIAL_BEGIN();
+  SERIAL_BEGIN(BAUD);
   pinMode(LED_Green, OUTPUT);
   digitalWrite(LED_Green, LOW);
 
@@ -1315,7 +1346,7 @@ void setup() {
   #elif defined (octoX8Config) || defined (octoXConfig) || defined (octoPlusConfig)
      initializeMotors(EIGHT_Motors);
   #endif
-
+  
   // Setup receiver pins for pin change interrupts
   initializeReceiver(LASTCHANNEL);
   initReceiverFromEEPROM();
