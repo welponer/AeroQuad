@@ -535,7 +535,6 @@
   void measureCriticalSensors() {
     measureAccelSum();
     measureGyroSum();
-    
   }
 #endif
 
@@ -1479,9 +1478,9 @@ void loop () {
       evaluateMetersPerSec();
       evaluateGyroRate();
 
-      const float filteredAccelRoll = computeFourthOrder(meterPerSecSec[XAXIS], &fourthOrder[AX_FILTER]);
-      const float filteredAccelPitch = computeFourthOrder(meterPerSecSec[YAXIS], &fourthOrder[AY_FILTER]);
-      const float filteredAccelYaw = computeFourthOrder(meterPerSecSec[ZAXIS], &fourthOrder[AZ_FILTER]);
+      filteredAccelRoll = computeFourthOrder(meterPerSecSec[XAXIS], &fourthOrder[AX_FILTER]);
+      filteredAccelPitch = computeFourthOrder(meterPerSecSec[YAXIS], &fourthOrder[AY_FILTER]);
+      filteredAccelYaw = computeFourthOrder(meterPerSecSec[ZAXIS], &fourthOrder[AZ_FILTER]);
       
       // ****************** Calculate Absolute Angle *****************
       #if defined FlightAngleNewARG
@@ -1542,19 +1541,31 @@ void loop () {
                             G_Dt);
       #endif
 
+
+      #if defined AltitudeHoldBaro
+        measureBaroSum(); 
+        if (frameCounter %   2 == 0) {  //  50 Hz tasks
+          evaluateBaroAltitude();
+        }
+      #endif
+      #ifdef AltitudeHoldRangeFinder
+        readRangeFinderDistanceSum(ALTITUDE_RANGE_FINDER_INDEX);
+        if (frameCounter %   2 == 0) {  //  50 Hz tasks
+          evaluateDistanceFromSample(ALTITUDE_RANGE_FINDER_INDEX);
+        }
+      #endif
+            
       // Combines external pilot commands and measured sensor data to generate motor commands
       processFlightControl();
-
+      
       #ifdef BinaryWrite
         if (fastTransfer == ON) {
           // write out fastTelemetry to Configurator or openLog
           fastTelemetry();
         }
       #endif
-      
-      #ifdef AltitudeHoldRangeFinder
-        readRangeFinderDistanceSum(ALTITUDE_RANGE_FINDER_INDEX);
-      #endif
+
+
     }
 
     // ================================================================
@@ -1567,14 +1578,6 @@ void loop () {
 
       // Reads external pilot commands and performs functions based on stick configuration
       readPilotCommands(); // defined in FlightCommand.pde
-
-      #if defined AltitudeHoldBaro
-        measureBaro(); // defined in altitude.h
-      #endif
-      
-      #ifdef AltitudeHoldRangeFinder
-        evaluateDistanceFromSample(ALTITUDE_RANGE_FINDER_INDEX);
-      #endif
 
       #if defined(CameraControl)
         cameraControlSetPitch(kinematicsAngle[YAXIS]);
@@ -1598,7 +1601,6 @@ void loop () {
       #if defined(BattMonitor)
         measureBatteryVoltage(G_Dt);
       #endif
-      
 
       // Listen for configuration commands and reports telemetry
       readSerialCommand(); // defined in SerialCom.pde
