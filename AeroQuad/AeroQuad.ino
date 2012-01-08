@@ -1100,9 +1100,11 @@
   #include <Device_I2C.h>
 
   // Gyroscope declaration
+  #define ITG3200_ADDRESS_ALTERNATE
   #include <Gyroscope_ITG3200.h>
 
   // Accelerometer declaration
+  #define BMA180_ADDRESS_ALTERNATE
   #include <Accelerometer_BMA180.h>
 
   // Receiver Declaration
