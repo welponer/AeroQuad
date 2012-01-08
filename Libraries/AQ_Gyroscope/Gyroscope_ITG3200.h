@@ -30,10 +30,11 @@
 #else
   #define ITG3200_ADDRESS					0x68
 #endif
-  
+#define ITG3200_IDENTITY 0x69
+
 void initializeGyro() {
 
-  if (readWhoI2C(ITG3200_ADDRESS) == ITG3200_ADDRESS) {
+  if (readWhoI2C(ITG3200_ADDRESS) == ITG3200_IDENTITY) {
 	  vehicleState |= GYRO_DETECTED;
   }
 	
