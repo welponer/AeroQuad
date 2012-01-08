@@ -46,10 +46,10 @@
 //#define ArduCopter          // ArduPilot Mega (APM) with Oilpan Sensor Board
 //#define AeroQuadMega_CHR6DM // Clean Arduino Mega with CHR6DM as IMU/heading ref.
 //#define APM_OP_CHR6DM       // ArduPilot Mega with CHR6DM as IMU/heading ref., Oilpan for barometer (just uncomment AltitudeHold for baro), and voltage divider
-#define ArduCopter_AQ       // ArduPilot Mega with AeroQuad Shield v2.0 compatible sensor board
+//#define ArduCopter_AQ       // ArduPilot Mega with AeroQuad Shield v2.0 compatible sensor board
 
 // STM32 platform
-//#define MapleCopter_CSG     // MapleR5 with CSG sensor board (ITG3200, BMA180,... ) 
+#define MapleCopter_CSG     // MapleR5 with CSG sensor board (ITG3200, BMA180,... ) 
 
 /****************************************************************************
  *********************** Define Flight Configuration ************************
@@ -91,7 +91,7 @@
 // Optional Sensors
 // Warning:  If you enable HeadingHold or AltitudeHold and do not have the correct sensors connected, the flight software may hang
 // *******************************************************************************************************************************
-#define HeadingMagHold // Enables Magnetometer, gets automatically selected if CHR6DM is defined
+//#define HeadingMagHold // Enables Magnetometer, gets automatically selected if CHR6DM is defined
 //#define AltitudeHoldBaro // Enables BMP085 Barometer (experimental, use at your own risk)
 //#define AltitudeHoldRangeFinder // EXPERIMENTAL : Enable altitude hold with range finder
 //#define RateModeOnly // Use this if you only have a gyro sensor, this will disable any attitude modes.
@@ -1094,8 +1094,7 @@
   #define EEPROM_USES_16BIT_WORDS
   
   // Serial
-  #define Serial SerialUSB
-  #define SerialUSB.begin(...); SerialUSB.begin();
+  #define SERIAL_USES_USB
   
   #include <Device_I2C.h>
 
@@ -1131,7 +1130,7 @@
   // Battery monitor declaration
   #ifdef BattMonitor
     struct BatteryData batteryData[] = {
-      BM_DEFINE_BATTERY_V(3, A0, ((4.98 / 1024.0) * (30.48 + 15.24) / 15.24), 0.0)};
+      BM_DEFINE_BATTERY_V(3, 0, ((4.98 / 1024.0) * (30.48 + 15.24) / 15.24), 0.0)};
   #endif
 
   #undef CameraControl
@@ -1305,7 +1304,13 @@
     #define SERIAL_PORT Serial
   #endif
 #else  
-  #define SERIAL_PORT Serial
+  #if defined(SERIAL_USES_USB)   // STM32 Maple
+    #define SERIAL_PORT SerialUSB
+    #undef BAUD
+    #define BAUD
+  #else
+    #define SERIAL_PORT Serial
+  #endif
 #endif  
 
 // Include this last as it contains objects from above declarations
@@ -1613,5 +1618,4 @@ void loop () {
       frameCounter = 0;
   }
 }
-
 
