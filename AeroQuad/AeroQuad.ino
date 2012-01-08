@@ -46,10 +46,10 @@
 //#define ArduCopter          // ArduPilot Mega (APM) with Oilpan Sensor Board
 //#define AeroQuadMega_CHR6DM // Clean Arduino Mega with CHR6DM as IMU/heading ref.
 //#define APM_OP_CHR6DM       // ArduPilot Mega with CHR6DM as IMU/heading ref., Oilpan for barometer (just uncomment AltitudeHold for baro), and voltage divider
-//#define ArduCopter_AQ       // ArduPilot Mega with AeroQuad Shield v2.0 compatible sensor board
+#define ArduCopter_AQ       // ArduPilot Mega with AeroQuad Shield v2.0 compatible sensor board
 
 // STM32 platform
-#define MapleCopter_CSG     // MapleR5 with CSG sensor board (ITG3200, BMA180,... ) 
+//#define MapleCopter_CSG     // MapleR5 with CSG sensor board (ITG3200, BMA180,... ) 
 
 /****************************************************************************
  *********************** Define Flight Configuration ************************
@@ -1086,7 +1086,7 @@
 
 
 #ifdef MapleCopter_CSG
-  #define LED_Green 37
+  #define LED_Green 13
   #define LED_Red 35
   #define LED_Yellow 36
   
@@ -1116,6 +1116,7 @@
   #ifdef HeadingMagHold
     //#define HMC5843
     #define HMC588L
+    #include <Magnetometer_HMC5883L.h>
   #endif
   #ifdef AltitudeHoldRangeFinder
     #define XLMAXSONAR 
