@@ -74,6 +74,9 @@
   #undef AltitudeHoldRangeFinder
   #undef HeadingMagHold
   #undef BattMonitor
+  #undef BattMonitorAutoDescent
+  #undef BattCellCount   
+  #undef POWERED_BY_VIN        
   #undef CameraControl
   #undef OSD
 
@@ -117,6 +120,9 @@
   #undef AltitudeHoldRangeFinder
   #undef HeadingMagHold
   #undef BattMonitor
+  #undef BattMonitorAutoDescent
+  #undef BattCellCount       
+  #undef POWERED_BY_VIN        
   #undef CameraControl
   #undef OSD
 
@@ -166,6 +172,10 @@
   #ifdef BattMonitor
     struct BatteryData batteryData[] = {
       BM_DEFINE_BATTERY_V(BattCellCount, 0, ((5.0 / 1024.0) * (15.0 + 7.5) / 7.5), 0.9)};
+  #else
+    #undef BattMonitorAutoDescent
+    #undef BattCellCount
+    #undef POWERED_BY_VIN        
   #endif
 
   #undef AltitudeHoldBaro
@@ -226,6 +236,10 @@
   #ifdef BattMonitor
     struct BatteryData batteryData[] = {
       BM_DEFINE_BATTERY_V(BattCellCount, 0, ((5.0 / 1024.0) * (15.0 + 7.5) / 7.5), 0.53)};
+  #else
+    #undef BattMonitorAutoDescent
+    #undef BattCellCount
+    #undef POWERED_BY_VIN        
   #endif
 
   // unsuported in mini
@@ -282,6 +296,9 @@
   #undef AltitudeHoldRangeFinder  
   #undef HeadingMagHold
   #undef BattMonitor
+  #undef BattMonitorAutoDescent
+  #undef BattCellCount
+  #undef POWERED_BY_VIN        
   #undef CameraControl
   #undef OSD
 
@@ -345,6 +362,10 @@
       struct BatteryData batteryData[] = {
         BM_DEFINE_BATTERY_V(BattCellCount, 0, ((5.0 / 1024.0) * (15.0 + 7.5) / 7.5),0.82)}; // v2 shield powered via power jack
     #endif
+  #else
+    #undef BattMonitorAutoDescent
+    #undef BattCellCount
+    #undef POWERED_BY_VIN        
   #endif
 
   #ifdef OSD
@@ -430,6 +451,10 @@
       struct BatteryData batteryData[] = {
         BM_DEFINE_BATTERY_V(BattCellCount, 0, ((5.0 / 1024.0) * (15.0 + 7.5) / 7.5),0.82)}; // v2 shield powered via power jack
     #endif
+  #else
+    #undef BattMonitorAutoDescent
+    #undef BattCellCount
+    #undef POWERED_BY_VIN        
   #endif
 
   #ifdef OSD
@@ -511,6 +536,10 @@
   #ifdef BattMonitor
     struct BatteryData batteryData[] = {
       BM_DEFINE_BATTERY_V(BattCellCount, 0, ((3.27 / 1024.0) * (10.050 + 3.26) / 3.26), 0.306)};
+  #else
+    #undef BattMonitorAutoDescent
+    #undef BattCellCount
+    #undef POWERED_BY_VIN        
   #endif
 
   #undef CameraControl
@@ -570,6 +599,9 @@
   #undef AltitudeHoldRangeFinder  
   #undef HeadingMagHold
   #undef BattMonitor
+  #undef BattMonitorAutoDescent
+  #undef BattCellCount
+  #undef POWERED_BY_VIN        
   #undef CameraControl
   #undef OSD
 
@@ -637,6 +669,10 @@
   #ifdef BattMonitor
     struct BatteryData batteryData[] = {
       BM_DEFINE_BATTERY_V(BattCellCount, 0, ((5.0 / 1024.0) * (15.0 + 7.5) / 7.5), 0.9)};
+  #else
+    #undef BattMonitorAutoDescent
+    #undef BattCellCount
+    #undef POWERED_BY_VIN        
   #endif
 
   #ifdef OSD
@@ -709,6 +745,10 @@
   #ifdef BattMonitor
     struct BatteryData batteryData[] = {
       BM_DEFINE_BATTERY_V(BattCellCount, 0, ((3.27 / 1024.0) * (10.050 + 3.260) / 3.260), 0.9)};
+  #else
+    #undef BattMonitorAutoDescent
+    #undef BattCellCount
+    #undef POWERED_BY_VIN        
   #endif
 
   /**
@@ -785,6 +825,10 @@
   #ifdef BattMonitor
     struct BatteryData batteryData[] = {
       BM_DEFINE_BATTERY_V(BattCellCount, 0, ((3.27 / 1024.0) * (10.050 + 3.260) / 3.260), 0.306)};
+  #else
+    #undef BattMonitorAutoDescent
+    #undef BattCellCount
+    #undef POWERED_BY_VIN        
   #endif
 
   #undef CameraControl
@@ -1131,6 +1175,13 @@
 #endif
 
 //********************************************************
+//****************** GPS DECLARATION *********************
+//********************************************************
+#if defined (UseGPS)
+  #include <TinyGPSWrapper.h>
+#endif
+
+//********************************************************
 //****************** OSD DEVICE DECLARATION **************
 //********************************************************
 #ifdef MAX7456_OSD     // only OSD supported for now is the MAX7456
@@ -1235,7 +1286,7 @@ void setup() {
   // Rate integral not used for now
   PID[ATTITUDE_XAXIS_PID_IDX].windupGuard = 0.375;
   PID[ATTITUDE_YAXIS_PID_IDX].windupGuard = 0.375;
-
+  
   // Optional Sensors
   #ifdef AltitudeHoldBaro
     initializeBaro();
@@ -1253,6 +1304,10 @@ void setup() {
     initializeBatteryMonitor(sizeof(batteryData) / sizeof(struct BatteryData), batteryMonitorAlarmVoltage);
     vehicleState |= BATTMONITOR_ENABLED;
   #endif
+  
+  #if defined (UseGPS)
+    initializeGps();
+  #endif 
 
   // Camera stabilization setup
   #if defined (CameraControl)
@@ -1463,6 +1518,11 @@ void loop () {
 
       #ifdef MAX7456_OSD
         updateOSD();
+      #endif
+      
+      #if defined (UseGPS)
+        readGps();
+//        gpsdump();
       #endif
     }
 
