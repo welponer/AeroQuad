@@ -1,7 +1,7 @@
 /*
-  AeroQuad v3.0 - December 2011
+  AeroQuad v3.0.1 - February 2012
   www.AeroQuad.com
-  Copyright (c) 2011 Ted Carancho.  All rights reserved.
+  Copyright (c) 2012 Ted Carancho.  All rights reserved.
   An Open Source Arduino based multicopter.
 
   This program is free software: you can redistribute it and/or modify
@@ -100,11 +100,9 @@
 //#define BattMonitorAutoDescent // if you want the craft to auto descent when the battery reach the alarm voltage
 #define BattCellCount 3        // set number of Cells (0 == autodetect 1S-3S)
 //#define POWERED_BY_VIN         // Uncomment this if your v2.x is powered directly by the vin/gnd of the arduino
-//#define BattBuzzer             // Enable for low battery buzzer/LED
 //
 // Advanced configuration. Please refer to wiki for instructions
 //#define BattCustomConfig DEFINE_BATTERY(cellcount,vpin,vscale,vbias,cpin,cscale,cbias) // cpin=BM_NOPIN if no sensor
-//#define BattCustomBuzzer pin1[,pin2]...
 
 //
 // *******************************************************************************************************************************
