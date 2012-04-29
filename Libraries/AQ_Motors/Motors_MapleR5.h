@@ -22,25 +22,38 @@
 #ifndef _AEROQUAD_MOTORS_MAPLER5_H_
 #define _AEROQUAD_MOTORS_MAPLER5_H_
 
+#include <WProgram.h>
 #include "Motors.h"
 
-  #define MOTORPIN0    2
-  #define MOTORPIN1    3
-  #define MOTORPIN2    5
-  #define MOTORPIN3    6
-  #define MOTORPIN4    7
-  #define MOTORPIN5    8
-  #define MOTORPIN6    11
-  #define MOTORPIN7    12
-  
-
+#define MOTORPIN1 12
+#define MOTORPIN2 11
+#define MOTORPIN3 27
+#define MOTORPIN4 28
+#define MOTORPIN5 2
+#define MOTORPIN6 3
+#define MOTORPIN7 -1
+#define MOTORPIN8 -1
 void initializeMotors(NB_Motors numbers) {
   numberOfMotors = numbers;
   
-  
-  
-  
-    
+  /*
+    Timer3.setPrescaleFactor(72);
+    Timer3.setOverflow(20000);
+
+    pinMode(MOTORPIN1, PWM);
+    pinMode(MOTORPIN2, PWM);
+    pinMode(MOTORPIN3, PWM);
+    pinMode(MOTORPIN4, PWM);
+
+    if (motorChannels <= 6) {
+      Timer2.setPrescaleFactor(72);
+      Timer2.setOverflow(20000);
+
+      pinMode(MOTORPIN5, PWM);
+      pinMode(MOTORPIN6, PWM);
+    }
+ */   
+
   commandAllMotors(1000);
 }
 
@@ -48,9 +61,32 @@ void writeMotors() {
   
 }
 
-void commandAllMotors(int command) {
+
+  void write() {
+ /*   Timer3.setCompare(TIMER_CH1, motorCommand[MOTOR1]);
+    Timer3.setCompare(TIMER_CH2, motorCommand[MOTOR2]);
+    Timer3.setCompare(TIMER_CH3, motorCommand[MOTOR3]);
+    Timer3.setCompare(TIMER_CH4, motorCommand[MOTOR4]);
+    if (motorChannels <= 6) {  
+    Timer2.setCompare(TIMER_CH1, motorCommand[MOTOR1]);
+    Timer2.setCompare(TIMER_CH2, motorCommand[MOTOR2]);
+    }   */
+  }
   
-}  
+  void commandMotor( byte motor, int command) {
+    motorCommand[motor] = command;
+    write();
+  }
+  
+  void commandAllMotors(int command) {
+    for( int i = 0; i < 8; i++) 
+      motorCommand[i] = command;
+    write();
+  }  
+
+
+
+
 
 
 #endif

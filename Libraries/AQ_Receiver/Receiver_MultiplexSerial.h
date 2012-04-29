@@ -27,39 +27,35 @@
 #include "Receiver.h"
 
 #ifndef RECEIVER_MULTIPLEX_SERIAL
-  #error RECEIVER_MULTIPLEX_SERIAL NOT DEFINED
-  //#define RECEIVER_MULTIPLEX_SERIAL Serial1
+  #define RECEIVER_MULTIPLEX_SERIAL Serial1
 #endif
 
-#define RECEIVER_MULTIPLEX_SERIAL Serial1
+// Serial Multiplex protocol 
+// StartByte (0xA1), 24 Servo high&low byte, 2 byte CRC16
 
-unsigned short inByte;        
-unsigned short count;             
-unsigned short checksum;
-char data[24];  
-bool checksumOK;
-unsigned short crc_ccitt;
-static unsigned short   crc16_ccitt_tab[256];
-static bool              crc16_ccitt_tab_init       = false;
-static void             init_crcccitt_tab( void );
-unsigned short update_crc_ccitt( unsigned short crc, char c );
+char ServoData[24];  
+unsigned short CheckSum;
+unsigned short ServoData_Count;  
+bool CheckSum_OK;
+unsigned short CheckSum_CRC16;
 
-
-#define                 CRC16_CCITT_POLY     0x1021
-
+// CRC16 
+static unsigned short TableCRC16[256];
+void initializeCRC16_CCITT( void);
+unsigned short calcCRC16_CCITT( unsigned short crc, char c);
+#define CRC16_CCITT_POLY 0x1021
 
 
 void initializeReceiver(int nbChannel) {
   initializeReceiverParam(nbChannel);
-  init_crcccitt_tab();
+  initializeCRC16_CCITT();
   RECEIVER_MULTIPLEX_SERIAL.begin(115200);
-  checksumOK = false;
+  CheckSum_OK = false;
 }
 
 int getRawChannelValue(byte channel) {
- if (checksumOK) {
-    //SerialUSB.println(((data[channel] << 8) + data[channel+1]), HEX);
-    receiverCommand[channel] = ((data[channel*2] << 8) + data[channel*2+1]);           
+ if (CheckSum_OK) {
+    receiverCommand[channel] = ((ServoData[channel*2] << 8) + ServoData[channel*2+1]);           
   }
   return receiverCommand[channel];
 }
@@ -68,54 +64,41 @@ void setChannelValue(byte channel,int value) {
   receiverCommand[channel] = value;
 }
 
-void readSerialReceiver(void) {
+void readSerialReceiver(void) {    
   if (RECEIVER_MULTIPLEX_SERIAL.available()) {        
-    inByte = RECEIVER_MULTIPLEX_SERIAL.read();
+    char inByte = RECEIVER_MULTIPLEX_SERIAL.read();
 
-    if ((inByte == 0xA1) && (count >= 24+2)) {
-      count = 0;
-      crc_ccitt = update_crc_ccitt(0x0000, 0xA1);   // start byte also part of the CRC 
-    } else if (count <= 23) {
-        data[count] = inByte;
-        crc_ccitt = update_crc_ccitt(crc_ccitt, inByte);
-        count++;
-    } else if (count == 24) {
-        checksum = inByte; 
-        count++;
-    } else if (count == 25) {
-        checksum = ((checksum << 8) + inByte);  
-        if (checksum == crc_ccitt) checksumOK = true; else checksumOK = false;
-        count++;
+    if ((inByte == 0xA1) && (ServoData_Count >= 24+2)) {
+      ServoData_Count = 0;
+      CheckSum_CRC16 = calcCRC16_CCITT(0x0000, 0xA1);   // start byte also part of the CRC 
+    } else if (ServoData_Count <= 23) {
+        ServoData[ServoData_Count] = inByte;
+        CheckSum_CRC16 = calcCRC16_CCITT(CheckSum_CRC16, inByte);
+        ServoData_Count++;
+    } else if (ServoData_Count == 24) {
+        CheckSum = inByte; 
+        ServoData_Count++;
+    } else if (ServoData_Count == 25) {
+        CheckSum = ((CheckSum << 8) + inByte);  
+        CheckSum_OK = (CheckSum == CheckSum_CRC16);
+        ServoData_Count++;
     }
   }    
 }
 
-
-
-/*
-
-void printHex(int num, int precision) {
-	char tmp[16];
-	char format[128];
-	sprintf(format, "0x%%.%dX", precision);
-	sprintf(tmp, format, num);
-	SerialUSB.print(tmp);
-}
-*/
-
-unsigned short update_crc_ccitt( unsigned short crc, char c ) {
+unsigned short calcCRC16_CCITT( unsigned short crc, char c) {
   unsigned short tmp, short_c;
+  
   short_c  = 0x00ff & (unsigned short) c;
-  if ( !crc16_ccitt_tab_init ) 
-    init_crcccitt_tab();
   tmp = (crc >> 8) ^ short_c;
-  crc = (crc << 8) ^ crc16_ccitt_tab[tmp];
+  crc = (crc << 8) ^ TableCRC16[tmp];
   return crc;
 } 
 
-static void init_crcccitt_tab( void ) {
+void initializeCRC16_CCITT( void) {
   int i, j;
   unsigned short crc, c;
+  
   for (i=0; i<256; i++) {
     crc = 0;
     c   = ((unsigned short) i) << 8;
@@ -124,14 +107,9 @@ static void init_crcccitt_tab( void ) {
       else  crc =   crc << 1;
       c = c << 1;
     }
-    crc16_ccitt_tab[i] = crc;
+    TableCRC16[i] = crc;
   }
-  crc16_ccitt_tab_init = true;
 } 
-
-
-
-
 
 #endif
 
