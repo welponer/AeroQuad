@@ -923,9 +923,15 @@
   }
   
   void initPlatformEEPROM(void) {
+    #define INIT_PLATFORM_EEPROM
     flightMode = ATTITUDE_FLIGHT_MODE;
     headingHoldConfig = ON;
-    receiverSlope[THROTTLE] = 0.5;
+    for (byte channel = XAXIS; channel < LASTCHANNEL; channel++) {
+      receiverSlope[channel] = 1.0;
+      receiverOffset[channel] = 0.0;
+      receiverSmoothFactor[channel] = 1.0;
+    }
+    receiverSmoothFactor[ZAXIS] = 0.5;receiverSlope[THROTTLE] = 0.5;
     receiverOffset[THROTTLE] = 500.0;
      
     //accelScaleFactor[XAXIS] = G_2_MPS2(1.0/4096.0);  //  g per LSB @ +/- 2g range
@@ -970,8 +976,8 @@
 
 
 #ifdef MapleCopter_CSG
-  #define LED_Green 13
-  #define LED_Red 35
+  #define LED_Green 35
+  #define LED_Red 13
   #define LED_Yellow 36
   
   // EEPROM emulation
@@ -991,14 +997,18 @@
   #include <Accelerometer_BMA180.h>
 
   // Receiver Declaration
-  #include <Receiver_MapleR5.h>
+  #define RECEIVER_MULTIPLEX
+  //#undef LASTCHANNEL
+  //#define LASTCHANNEL 8
+  #define RECEIVER_MULTIPLEX_SERIAL Serial1
+  #include <Receiver_MultiplexSerial.h>
 
   // Motor Declaration
   #include <Motors_MapleR5.h>
 
-  // heading mag hold declaration
+  // Heading mag hold declaration
   #ifdef HeadingMagHold
-    //#define HMC5843
+    #define SPARKFUN_9DOF_5883L
     #define HMC588L
     #include <Magnetometer_HMC5883L.h>
   #endif
@@ -1014,8 +1024,9 @@
 
   // Battery monitor declaration
   #ifdef BattMonitor
-    struct BatteryData batteryData[] = {
-      BM_DEFINE_BATTERY_V(3, 0, ((4.98 / 1024.0) * (30.48 + 15.24) / 15.24), 0.0)};
+    //struct BatteryData batteryData[] = {
+    //  BM_DEFINE_BATTERY_V(3, 0, ((4.98 / 1024.0) * (30.48 + 15.24) / 15.24), 0.0)};
+    #define BattDefaultConfig DEFINE_BATTERY(3, 0, ((4.98 / 1024.0) * (30.48 + 15.24) / 15.24), 0.0, BM_NOPIN, 0, 0)  
   #endif
 
   #undef CameraControl
@@ -1031,6 +1042,25 @@
     pinMode(LED_Green, OUTPUT);
 
     Wire.begin( 0, PORTI2C2, I2C_FAST_MODE);
+  }
+  
+  void initPlatformEEPROM(void) {
+    #define INIT_PLATFORM_EEPROM
+    flightMode = ATTITUDE_FLIGHT_MODE;
+    headingHoldConfig = ON;
+    for (byte channel = XAXIS; channel < LASTCHANNEL; channel++) {
+      receiverSlope[channel] = 0.3106;
+      receiverOffset[channel] = 863.77;
+      receiverSmoothFactor[channel] = 1.0;
+    }
+    //receiverSmoothFactor[ZAXIS] = 0.5;
+    //receiverSlope[THROTTLE] = 0.5*0.3106;
+    //receiverOffset[THROTTLE] = 500.0+863.77;
+     
+    //accelScaleFactor[XAXIS] = G_2_MPS2(1.0/4096.0);  //  g per LSB @ +/- 2g range
+    accelScaleFactor[XAXIS] = G_2_MPS2(1.0/2048.0);  //  g per LSB @ +/- 4g range
+    accelScaleFactor[YAXIS] = accelScaleFactor[XAXIS];
+    accelScaleFactor[ZAXIS] = accelScaleFactor[XAXIS];
   }
 
   /**
@@ -1365,6 +1395,9 @@ void setup() {
 void loop () {
   currentTime = micros();
   deltaTime = currentTime - previousTime;
+  //   #ifdef RECEIVER_MULTIPLEX
+      readSerialReceiver();
+   //   #endif
 
   measureCriticalSensors();
 
@@ -1471,8 +1504,6 @@ void loop () {
           fastTelemetry();
         }
       #endif
-
-
     }
 
     // ================================================================
@@ -1482,7 +1513,7 @@ void loop () {
 
       G_Dt = (currentTime - fiftyHZpreviousTime) / 1000000.0;
       fiftyHZpreviousTime = currentTime;
-
+      
       // Reads external pilot commands and performs functions based on stick configuration
       readPilotCommands(); // defined in FlightCommand.pde
 
