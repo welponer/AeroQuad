@@ -132,9 +132,14 @@ void readSerialCommand() {
       
     case 'I': // Initialize EEPROM with default values
       initializeEEPROM(); // defined in DataStorage.h
+      #ifdef INIT_PLATFORM_EEPROM
+        initPlatformEEPROM();
+      #endif
       writeEEPROM();
       calibrateGyro();
       computeAccelBias();
+      
+    
       zeroIntegralError();
       #ifdef HeadingMagHold
         initializeMagnetometer();
@@ -372,8 +377,8 @@ void sendSerialTelemetry() {
     
   case 'g': // Send transmitter calibration data
     for (byte axis = XAXIS; axis < LASTCHANNEL; axis++) {
-      Serial.print(receiverSlope[axis], 6);
-      Serial.print(',');
+      SERIAL_PRINT(receiverSlope[axis], 6);
+      SERIAL_PRINT(',');
     }
     SERIAL_PRINTLN();
     queryType = 'X';
@@ -381,8 +386,8 @@ void sendSerialTelemetry() {
     
   case 'h': // Send transmitter calibration data
     for (byte axis = XAXIS; axis < LASTCHANNEL; axis++) {
-      Serial.print(receiverOffset[axis], 6);
-      Serial.print(',');
+      SERIAL_PRINT(receiverOffset[axis], 6);
+      SERIAL_PRINT(',');
     }
     SERIAL_PRINTLN();
     queryType = 'X';
