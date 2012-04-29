@@ -1395,9 +1395,11 @@ void setup() {
 void loop () {
   currentTime = micros();
   deltaTime = currentTime - previousTime;
-  //   #ifdef RECEIVER_MULTIPLEX
+  
+  // Fast serial read for Multplex receiver serial protocol
+  #ifdef RECEIVER_MULTIPLEX
       readSerialReceiver();
-   //   #endif
+  #endif
 
   measureCriticalSensors();
 
