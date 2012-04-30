@@ -33,6 +33,10 @@
 #define MOTORPIN7 -1
 #define MOTORPIN8 -1
 
+void initializeMotors(byte numbers) {
+
+}
+
 void initializeMotors(NB_Motors numbers) {
   numberOfMotors = numbers;
     
