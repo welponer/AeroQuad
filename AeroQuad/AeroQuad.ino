@@ -44,7 +44,7 @@
   #error GpsNavigation NEED AltitudeHoldBaro defined
 #endif
 
-#if defined (AutoLanding) && !defined (AltitudeHoldBaro) || !defined (AltitudeHoldRangeFinder)
+#if defined (AutoLanding) && (!defined (AltitudeHoldBaro) || !defined (AltitudeHoldRangeFinder))
   #error AutoLanding NEED AltitudeHoldBaro and AltitudeHoldRangeFinder defined
 #endif
 

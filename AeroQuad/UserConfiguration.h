@@ -33,11 +33,11 @@
 
 // Mega platform
 //#define AeroQuadMega_v1     // Arduino Mega with AeroQuad Shield v1.7 and below
-#define AeroQuadMega_v2     // Arduino Mega with AeroQuad Shield v2.0
+//#define AeroQuadMega_v2     // Arduino Mega with AeroQuad Shield v2.0
 //#define AeroQuadMega_v21    // Arduino Mega with AeroQuad Shield v2.1
 //#define AutonavShield       // Really good board for the guy here http://aeroquad.com/showthread.php?4106-New-Shield-available-Mega-AutoNav-Shield&highlight=autonav
 //#define AeroQuadMega_Wii    // Arduino Mega with Wii Sensors and AeroQuad Shield v2.x
-//#define ArduCopter          // ArduPilot Mega (APM) with Oilpan Sensor Board
+#define ArduCopter          // ArduPilot Mega (APM) with Oilpan Sensor Board
 //#define AeroQuadMega_CHR6DM // Clean Arduino Mega with CHR6DM as IMU/heading ref.
 //#define APM_OP_CHR6DM       // ArduPilot Mega with CHR6DM as IMU/heading ref., Oilpan for barometer (just uncomment AltitudeHold for baro), and voltage divider
 
@@ -74,15 +74,15 @@
 // Warning:  If you enable HeadingHold or AltitudeHold and do not have the correct sensors connected, the flight software may hang
 // *******************************************************************************************************************************
 #define HeadingMagHold // Enables Magnetometer, gets automatically selected if CHR6DM is defined
-#define AltitudeHoldBaro // Enables BMP085 Barometer
-#define AltitudeHoldRangeFinder // Enable altitude hold with range finder, Not displayed on the configurator
+//#define AltitudeHoldBaro // Enables BMP085 Barometer
+//#define AltitudeHoldRangeFinder // Enable altitude hold with range finder, Not displayed on the configurator
 
-#define UseGPS // Try to auto-detect the GPS, may have some detection trouble making the connection to the configurator not working
+//#define UseGPS // Try to auto-detect the GPS, may have some detection trouble making the connection to the configurator not working
 //#define UseGPS_NMEA   // force the use of NMEA GPS
 //#define UseGPS_UBLOX  // force the use of UBLOX GPS
 //#define UseGPS_MTK  // force the use of MTK GPS
 //#define UseGPS_406  // force the use of MTK GPS
-#define UseGPSNavigator // EXPERIMENTAL NEED UseGPS TO BE DEFINED, enable GPS position hold, auto return home when no mission or execute mission
+//#define UseGPSNavigator // EXPERIMENTAL NEED UseGPS TO BE DEFINED, enable GPS position hold, auto return home when no mission or execute mission
 
 //
 // *******************************************************************************************************************************
@@ -90,8 +90,8 @@
 // For more information on how to setup Battery Monitor please refer to http://aeroquad.com/showwiki.php?title=BatteryMonitor+h
 // *******************************************************************************************************************************
 #define BattMonitor            // Enable Battery monitor
-#define BattMonitorAutoDescent // NEED BattMonitor defined. if you want the craft to auto descent when the battery reach the alarm voltage
-#define POWERED_BY_VIN         // NEED BattMonitor defined. Uncomment this if your v2.x is powered directly by the vin/gnd of the arduino
+//#define BattMonitorAutoDescent // NEED BattMonitor defined. if you want the craft to auto descent when the battery reach the alarm voltage
+//#define POWERED_BY_VIN         // NEED BattMonitor defined. Uncomment this if your v2.x is powered directly by the vin/gnd of the arduino
 //
 // Advanced configuration. Please refer to wiki for instructions
 //#define BattCustomConfig DEFINE_BATTERY(cellcount,vpin,vscale,vbias,cpin,cscale,cbias) // cpin=BM_NOPIN if no sensor
