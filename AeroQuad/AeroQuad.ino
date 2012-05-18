@@ -60,7 +60,6 @@
   FastSerialPort3(Serial3);
 #endif
 
-
 #include <EEPROM.h>
 #include <Wire.h>
 #include <GlobalDefined.h>
@@ -1440,7 +1439,7 @@ void setup() {
   SERIAL_BEGIN(BAUD);
   pinMode(LED_Green, OUTPUT);
   digitalWrite(LED_Green, LOW);
-
+  
   // Read user values from EEPROM
   readEEPROM(); // defined in DataStorage.h
   if (readFloat(SOFTWARE_VERSION_ADR) != SOFTWARE_VERSION) { // If we detect the wrong soft version, we init all parameters
@@ -1543,7 +1542,7 @@ void setup() {
   #endif
 
   setupFourthOrder();
-
+  
   previousTime = micros();
   digitalWrite(LED_Green, HIGH);
   safetyCheck = 0;
@@ -1598,6 +1597,7 @@ void loop () {
 //       float estimatedYVelocity = (smootedAccel[YAXIS] * (1 - invSqrt(isq(smootedAccel[XAXIS]) + isq(smootedAccel[YAXIS]) + isq(smootedAccel[ZAXIS]))));
 //       float estimatedZVelocity = (smootedAccel[ZAXIS] * (1 - accelOneG * invSqrt(isq(smootedAccel[XAXIS]) + isq(smootedAccel[YAXIS]) + isq(smootedAccel[ZAXIS])))) - runTimeAccelBias[ZAXIS];
 //    #endif         
+      
       
     /* calculate kinematics*/
     calculateKinematics(gyroRate[XAXIS],
