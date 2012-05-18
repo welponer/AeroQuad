@@ -129,6 +129,7 @@ void readSerialCommand() {
       
     case 'I': // Initialize EEPROM with default values
       initializeEEPROM(); // defined in DataStorage.h
+      initPlatformEEPROM();
       writeEEPROM();
       calibrateGyro();
       computeAccelBias();

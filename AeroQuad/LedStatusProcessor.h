@@ -52,10 +52,25 @@ void processLedStatus() {
   #if defined (BattMonitor)
     if (batteryAlarm) {
       digitalWrite(LED_Red, flashingLedState & 4);
+      digitalWrite(A8, flashingLedState & 4); // LED 1 on
+      digitalWrite(A10, flashingLedState & 4); // LED 2 on
+      digitalWrite(A12, flashingLedState & 4); // LED 3 on
+      digitalWrite(A14, flashingLedState & 4); // LED 4 on
+      digitalWrite(BUZZER, HIGH);  
     } else if (batteryWarning) {
-      digitalWrite(LED_Red, (flashingLedState & 15)==0);
+      digitalWrite(LED_Red, (flashingLedState & 10)==0);
+      digitalWrite(A8, (flashingLedState & 15)==0); // LED 1 on
+      digitalWrite(A10, (flashingLedState & 15)==0); // LED 2 on
+      digitalWrite(A12, (flashingLedState & 15)==0); // LED 3 on
+      digitalWrite(A14, (flashingLedState & 15)==0); // LED 4 on
+      digitalWrite(BUZZER, (flashingLedState & 15)==0); 
     } else { 
       digitalWrite(LED_Red, LOW);
+      digitalWrite(A8, motorArmed && (flashingLedState & 20)); // LED 1 on
+      digitalWrite(A10, motorArmed && (flashingLedState & 20)); // LED 2 on
+      digitalWrite(A12, motorArmed && (flashingLedState & 20)); // LED 3 on
+      digitalWrite(A14, motorArmed && (flashingLedState & 20)); // LED 4 on
+      digitalWrite(BUZZER, LOW);
     }
   #endif  
 
