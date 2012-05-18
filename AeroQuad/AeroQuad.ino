@@ -1159,8 +1159,6 @@
 
   // Receiver Declaration
   #define RECEIVER_MULTIPLEX
-  //#undef LASTCHANNEL
-  //#define LASTCHANNEL 8
   #define RECEIVER_MULTIPLEX_SERIAL Serial1
   #include <Receiver_MultiplexSerial.h>
 
