@@ -1047,7 +1047,7 @@
   #ifdef BattMonitor
       //BM_DEFINE_BATTERY_V(3, A0, ((4.98 / 1024.0) * (30.48 + 15.24) / 15.24), 0.0)};
       //#define BattDefaultConfig DEFINE_BATTERY(0, A0, 13.35, 0.0, BM_NOPIN, 0, 0)
-      #define BattDefaultConfig DEFINE_BATTERY(0, A0, (4.98  * (30.48 + 15.24) / 15.24), 0.31, BM_NOPIN, 0, 0)
+      #define BattDefaultConfig DEFINE_BATTERY(0, A0, (4.96  * (30.48 + 15.24) / 15.24), 0.31, BM_NOPIN, 0, 0)
   #endif
 
   #undef CameraControl
@@ -1442,6 +1442,7 @@ void setup() {
   readEEPROM(); // defined in DataStorage.h
   if (readFloat(SOFTWARE_VERSION_ADR) != SOFTWARE_VERSION) { // If we detect the wrong soft version, we init all parameters
     initializeEEPROM();
+    initPlatformEEPROM(); 
     writeEEPROM();
   }
 
