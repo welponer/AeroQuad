@@ -33,8 +33,7 @@
 
 // Mega platform
 //#define AeroQuadMega_v1     // Arduino Mega with AeroQuad Shield v1.7 and below
-//#define AeroQuadMega_v2     // Arduino Mega with AeroQuad Shield v2.0
-//#define AeroQuadMega_v21    // Arduino Mega with AeroQuad Shield v2.1
+//#define AeroQuadMega_v2     // Arduino Mega with AeroQuad Shield v2.0//#define AeroQuadMega_v21    // Arduino Mega with AeroQuad Shield v2.1
 //#define AutonavShield       // Really good board for the guy here http://aeroquad.com/showthread.php?4106-New-Shield-available-Mega-AutoNav-Shield&highlight=autonav
 //#define AeroQuadMega_Wii    // Arduino Mega with Wii Sensors and AeroQuad Shield v2.x
 //#define ArduCopter          // ArduPilot Mega (APM) with Oilpan Sensor Board
@@ -85,7 +84,6 @@
 
 //#define UseGPS // Try to auto-detect the GPS, may have some detection trouble making the connection to the configurator not working
 //#define UseGPS_NMEA   // force the use of NMEA GPS
-//#define UseGPS_UBLOX  // force the use of UBLOX GPS
 //#define UseGPS_MTK  // force the use of MTK GPS
 //#define UseGPS_406  // force the use of MTK GPS
 //#define UseGPSNavigator // EXPERIMENTAL NEED UseGPS TO BE DEFINED, enable GPS position hold, auto return home when no mission or execute mission
@@ -100,7 +98,7 @@
 //#define POWERED_BY_VIN         // NEED BattMonitor defined. Uncomment this if your v2.x is powered directly by the vin/gnd of the arduino
 //
 // Advanced configuration. Please refer to wiki for instructions
-//#define BattCustomConfig DEFINE_BATTERY(3,0,15,1.2,2,500,-251.5) // cpin=BM_NOPIN if no sensor
+//#define BattCustomConfig DEFINE_BATTERY( 3,0,15,0,2,50,0)
 
 //
 // *******************************************************************************************************************************
@@ -108,6 +106,7 @@
 // *******************************************************************************************************************************
 #define NormalReceiver // this do nothing really but, it indicate users that they don't have to define other option here if they have a normal receiver
 //#define RemotePCReceiver // EXPERIMENTAL Use PC as transmitter via serial communicator with XBEE
+//#define ReceiverSBUS  // Use a Futaba sBUS RX, connect sBUS data line to Serial2 RX, supports up to 8 channels
 //#define ReceiverPPM // Use a ppm receiver
 //#define ReceiverHWPPM // Use a ppm receiver with HW timer, needs a HW modification (see Libraries/AQ_Receiver/Receiver_HWPPM.h)
 // You need to select one of these channel order definitions for PPM receiver
