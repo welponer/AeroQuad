@@ -52,7 +52,7 @@
 #define quadXConfig
 //#define quadPlusConfig
 //#define hexPlusConfig
-//#define hexXConfig      // EXPERIMENTAL: not completely re-tested
+//#define hexXConfig      
 //#define triConfig
 //#define quadY4Config
 //#define hexY6Config
@@ -60,7 +60,12 @@
 //#define octoPlusConfig  // EXPERIMENTAL: not completely re-tested
 //#define octoXConfig     // EXPERIMENTAL: not completely re-tested
 
+
+// MOTOR ADVANCE CONFIG SECTION
 //#define CHANGE_YAW_DIRECTION // if you want to reverse the yaw correction direction
+
+//#define USE_400HZ_ESC // For ESC that support 400Hz update rate, ESC OR PLATFORM MAY NOT SUPPORT IT
+
 
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

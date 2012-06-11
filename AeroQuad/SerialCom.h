@@ -112,17 +112,11 @@ void readSerialCommand() {
       break;
       
     case 'G': // Receive transmitter calibration values
-      //for(byte channel = XAXIS; channel<LASTCHANNEL; channel++) {
-      //  receiverSlope[channel] = readFloatSerial();
-      //}
       channelCal = (int)readFloatSerial();
       receiverSlope[channelCal] = readFloatSerial();
       break;
       
     case 'H': // Receive transmitter calibration values
-      //for(byte channel = XAXIS; channel<LASTCHANNEL; channel++) {
-      //  receiverOffset[channel] = readFloatSerial();
-      //}
       channelCal = (int)readFloatSerial();
       receiverOffset[channelCal] = readFloatSerial();
       break;
@@ -131,6 +125,7 @@ void readSerialCommand() {
       initializeEEPROM(); // defined in DataStorage.h
       initPlatformEEPROM();
       writeEEPROM();
+      storeSensorsZeroToEEPROM();
       calibrateGyro();
       computeAccelBias();
       zeroIntegralError();
@@ -154,7 +149,7 @@ void readSerialCommand() {
       runTimeAccelBias[YAXIS] = readFloatSerial();      
       accelScaleFactor[ZAXIS] = readFloatSerial();
       runTimeAccelBias[ZAXIS] = readFloatSerial();
-      writeEEPROM();
+      storeSensorsZeroToEEPROM();
       break;
       
     case 'L': // generate accel bias
@@ -168,17 +163,14 @@ void readSerialCommand() {
       
     case 'M': // calibrate magnetometer
       #ifdef HeadingMagHold
-//Mag Scale values are not settable here (yet) until the Configurator is compatible      
-//        magScale[XAXIS] = readFloatSerial();      
         magBias[XAXIS]  = readFloatSerial();      
-//        magScale[YAXIS] = readFloatSerial();
         magBias[YAXIS]  = readFloatSerial();
-//        magScale[ZAXIS] = readFloatSerial();
         magBias[ZAXIS]  = readFloatSerial();
         writeEEPROM();
       #else
-        for(int c=0;c<3;c++)
-	      { readFloatSerial(); }
+        for(int c=0;c<3;c++) {
+          readFloatSerial();
+        }
       #endif
       break;
       
@@ -575,7 +567,8 @@ void sendSerialTelemetry() {
     #endif
     #if defined AltitudeHoldBaro || defined AltitudeHoldRangeFinder
       #if defined AltitudeHoldBaro
-        PrintValueComma(getBaroAltitude());
+//        PrintValueComma(getBaroAltitude());
+        PrintValueComma(estimatedBaroAltitude);
       #elif defined AltitudeHoldRangeFinder
         PrintValueComma(rangeFinderRange[ALTITUDE_RANGE_FINDER_INDEX] != INVALID_RANGE ? rangeFinderRange[ALTITUDE_RANGE_FINDER_INDEX] : 0.0);
       #endif  
@@ -661,49 +654,39 @@ void sendSerialTelemetry() {
   }
 }
 
-// Used to read floating point values from the serial port
-float readFloatSerial() {
-  #define SERIALFLOATSIZE 15
+void readValueSerial(char *data, byte size) {
   byte index = 0;
   byte timeout = 0;
-  char data[SERIALFLOATSIZE] = "";
+  data[0] = '\0';
 
   do {
     if (SERIAL_AVAILABLE() == 0) {
-      delay(10);
+      delay(1);
       timeout++;
-    }
-    else {
+    } else {
       data[index] = SERIAL_READ();
       timeout = 0;
       index++;
     }
-  } while ((index == 0 || data[index-1] != ';') && (timeout < 10) && (index < sizeof(data)-1));
-  data[index] = '\0';
+  } while ((index == 0 || data[index-1] != ';') && (timeout < 10) && (index < size-1));
 
+  data[index] = '\0';
+}
+
+
+// Used to read floating point values from the serial port
+float readFloatSerial() {
+  char data[15] = "";
+
+  readValueSerial(data, sizeof(data));
   return atof(data);
 }
 
 // Used to read integer values from the serial port
 long readIntegerSerial() {
-  #define SERIALINTEGERSIZE 16
-  byte index = 0;
-  byte timeout = 0;
-  char data[SERIALINTEGERSIZE] = "";
+  char data[16] = "";
 
-  do {
-    if (SERIAL_AVAILABLE() == 0) {
-      delay(10);
-      timeout++;
-    }
-    else {
-      data[index] = SERIAL_READ();
-      timeout = 0;
-      index++;
-    }
-  } while ((index == 0 || data[index-1] != ';') && (timeout < 10) && (index < sizeof(data)-1));
-  data[index] = '\0';
-
+  readValueSerial(data, sizeof(data));
   return atol(data);
 }
 
@@ -954,15 +937,15 @@ void reportVehicleState() {
       telemetryBuffer.data.course    = getCourse()/10; // degrees
       telemetryBuffer.data.heading   = (short)(trueNorthHeading*RAD2DEG); // degrees
       telemetryBuffer.data.speed     = getGpsSpeed()*36/1000;              // km/h
-#ifdef UseRSSIFaileSafe
-# ifdef RSSI_RAWVAL
-      telemetryBuffer.data.rssi      = rssiRawValue/10; // scale to 0-100
-# else
-      telemetryBuffer.data.rssi      = rssiRawValue;
-# endif      
-#else
-      telemetryBuffer.data.rssi      = 100;
-#endif
+      #ifdef UseRSSIFaileSafe
+        #ifdef RSSI_RAWVAL
+          telemetryBuffer.data.rssi      = rssiRawValue/10; // scale to 0-100
+        #else
+          telemetryBuffer.data.rssi      = rssiRawValue;
+        #endif      
+      #else
+        telemetryBuffer.data.rssi      = 100;
+      #endif
       telemetryBuffer.data.voltage   = batteryData[0].voltage/10;  // to 0.1V
       telemetryBuffer.data.current   = batteryData[0].current/100; // to A
       telemetryBuffer.data.capacity  = batteryData[0].usedCapacity/1000; // mAh
