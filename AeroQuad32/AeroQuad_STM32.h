@@ -52,7 +52,11 @@ tSerial &Serial = SERIAL_VAR;
 #endif
 
 // Receiver Declaration
+#ifndef Receiver_PPM
 #define RECEIVER_STM32
+#else
+#define RECEIVER_STM32PPM
+#endif
 
 // Motor declaration
 #define MOTOR_STM32
@@ -96,7 +100,7 @@ tSerial &Serial = SERIAL_VAR;
 		#define BATT_ANALOG_INPUT	Port2Pin('C', 0)
 		#define BATT_DIODE_LOSS		0.0
 	#endif
-	#define BattDefaultConfig DEFINE_BATTERY(BattCellCount, BATT_ANALOG_INPUT, ((BATT_AREF / BATT_MAX_DIGITAL) * (BATT_R_HIGH + BATT_R_LOW) / BATT_R_LOW), BATT_DIODE_LOSS, BM_NOPIN, 0, 0)
+	#define BattDefaultConfig DEFINE_BATTERY(0, BATT_ANALOG_INPUT, ((BATT_AREF / BATT_MAX_DIGITAL) * (BATT_R_HIGH + BATT_R_LOW) / BATT_R_LOW), BATT_DIODE_LOSS, BM_NOPIN, 0, 0)
 #endif
 
 #ifdef OSD

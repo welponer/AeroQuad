@@ -121,10 +121,8 @@
    * Measure critical sensors
    */
   void measureCriticalSensors() {
-    if (deltaTime >= 10000) {
-      measureGyro();
-      measureAccel();
-    }
+    measureGyro();
+    measureAccel();
   }
 #endif
 
@@ -168,10 +166,8 @@
    * Measure critical sensors
    */
   void measureCriticalSensors() {
-    if (deltaTime >= 10000) {
-      measureGyro();
-      measureAccel();
-    }
+    measureGyro();
+    measureAccel();
   }
 #endif
 
@@ -1284,6 +1280,8 @@
   #include <Receiver_MEGA.h>
 #elif defined RECEIVER_APM
   #include <Receiver_APM.h>
+#elif defined RECEIVER_STM32PPM
+  #include <Receiver_STM32PPM.h>  
 #elif defined RECEIVER_STM32
   #include <Receiver_STM32.h>  
 #endif
