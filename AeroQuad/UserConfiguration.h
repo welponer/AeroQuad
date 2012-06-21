@@ -87,11 +87,7 @@
 
 //#define AutoLanding // Enable auto landing on channel AUX3 of the remote, NEED AltitudeHoldBaro AND AltitudeHoldRangeFinder
 
-
 //#define UseGPS // Try to auto-detect the GPS, may have some detection trouble making the connection to the configurator not working
-//#define UseGPS_NMEA   // force the use of NMEA GPS
-//#define UseGPS_MTK  // force the use of MTK GPS
-//#define UseGPS_406  // force the use of MTK GPS
 //#define UseGPSNavigator // EXPERIMENTAL NEED UseGPS TO BE DEFINED, enable GPS position hold, auto return home when no mission or execute mission
 
 //
@@ -168,7 +164,7 @@
 //#define ShowRSSI
 //#define PAL                       // uncomment this to default to PAL video
 //#define AUTODETECT_VIDEO_STANDARD // detect automatically, signal must be present at Arduino powerup!
-//#define CALLSIGN "Aeroquad"         // Show (optional) callsign˘˘
+//#define CALLSIGN "Aeroquad"         // Show (optional) callsign
 //#define ShowAttitudeIndicator     // Display the attitude indicator calculated by the AHRS
 //#define USUnits                   // Enable for US units (feet,miles,mph)
 
