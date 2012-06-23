@@ -39,10 +39,10 @@
 //#define ArduCopter          // ArduPilot Mega (APM) with Oilpan Sensor Board
 //#define AeroQuadMega_CHR6DM // Clean Arduino Mega with CHR6DM as IMU/heading ref.
 //#define APM_OP_CHR6DM       // ArduPilot Mega with CHR6DM as IMU/heading ref., Oilpan for barometer (just uncomment AltitudeHold for baro), and voltage divider
-#define ArduCopter_AQ       // ArduPilot Mega with AeroQuad Shield v2.0 compatible sensor board
+//#define ArduCopter_AQ       // ArduPilot Mega with AeroQuad Shield v2.0 compatible sensor board
 
 // STM32 platform
-//#define MapleCopter_CSG     // MapleR5 with CSG sensor board (ITG3200, BMA180,... ) 
+#define MapleCopter_CSG     // MapleR5 with CSG sensor board (ITG3200, BMA180,... ) 
 
 
 /****************************************************************************
@@ -82,7 +82,7 @@
 // Warning:  If you enable HeadingHold or AltitudeHold and do not have the correct sensors connected, the flight software may hang
 // *******************************************************************************************************************************
 #define HeadingMagHold // Enables Magnetometer, gets automatically selected if CHR6DM is defined
-#define AltitudeHoldBaro // Enables BMP085 Barometer
+//#define AltitudeHoldBaro // Enables BMP085 Barometer
 //#define AltitudeHoldRangeFinder // Enable altitude hold with range finder, Not displayed on the configurator
 
 //#define AutoLanding // Enable auto landing on channel AUX3 of the remote, NEED AltitudeHoldBaro AND AltitudeHoldRangeFinder

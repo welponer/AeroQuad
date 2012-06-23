@@ -408,8 +408,8 @@ void sendSerialTelemetry() {
     
   case 'g': // Send transmitter calibration data
     for (byte axis = XAXIS; axis < LASTCHANNEL; axis++) {
-      Serial.print(receiverSlope[axis], 6);
-      Serial.print(',');
+      SERIAL_PORT.print(receiverSlope[axis], 6);
+      SERIAL_PORT.print(',');
     }
     SERIAL_PRINTLN();
     queryType = 'X';
@@ -417,8 +417,8 @@ void sendSerialTelemetry() {
     
   case 'h': // Send transmitter calibration data
     for (byte axis = XAXIS; axis < LASTCHANNEL; axis++) {
-      Serial.print(receiverOffset[axis], 6);
-      Serial.print(',');
+      SERIAL_PORT.print(receiverOffset[axis], 6);
+      SERIAL_PORT.print(',');
     }
     SERIAL_PRINTLN();
     queryType = 'X';
