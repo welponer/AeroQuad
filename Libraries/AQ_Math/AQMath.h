@@ -32,6 +32,7 @@
 float filterSmooth(float currentData, float previousData, float smoothFactor);
 float filterSmoothWithTime(float currentData, float previousData, float smoothFactor, float dT_scaledAroundOne);
 
+
 // ***********************************************************************
 // *********************** Median Filter Class ***************************
 // ***********************************************************************
