@@ -24,29 +24,49 @@
 void sendByteI2C(int deviceAddress, byte dataValue) {
 
   Wire.beginTransmission(deviceAddress);
+#if defined(ARDUINO) && ARDUINO >= 100
   Wire.write(dataValue);
+#else
+  Wire.send(dataValue);
+#endif
   Wire.endTransmission();
 }
 
 byte readByteI2C() {
-    return Wire.read();
+#if defined(ARDUINO) && ARDUINO >= 100
+  return Wire.read();
+#else
+  return Wire.receive();
+#endif
 }
 
 byte readByteI2C(int deviceAddress) {
 
-    Wire.requestFrom(deviceAddress, 1);
-    return Wire.read();
+  Wire.requestFrom(deviceAddress, 1);
+#if defined(ARDUINO) && ARDUINO >= 100
+        return Wire.read();
+#else
+        return Wire.receive();
+#endif
 }
 
 int readWordI2C(int deviceAddress) {
 
   Wire.requestFrom(deviceAddress, 2);
-  return (Wire.read() << 8) | Wire.read();
+#if defined(ARDUINO) && ARDUINO >= 100
+    return (Wire.read() << 8) | Wire.read();
+#else
+    return (Wire.receive() << 8) | Wire.receive();
+#endif
 }
 
 int readWordI2C() {
 
-  return (Wire.read() << 8) | Wire.read();
+#if defined(ARDUINO) && ARDUINO >= 100
+    return (Wire.read() << 8) | Wire.read();
+#else
+    return (Wire.receive() << 8) | Wire.receive();
+#endif
 }
 
 int readShortI2C(int deviceAddress) {
@@ -61,10 +81,14 @@ int readShortI2C() {
 }
 
 int readReverseShortI2C() {
-
+#if defined(ARDUINO) && ARDUINO >= 100
   return (signed short)( Wire.read() | (Wire.read() << 8));
+#else
+  return (signed short)( Wire.receive() | (Wire.receive() << 8));
+#endif
 }
 
+/*
 int readWordWaitI2C(int deviceAddress) {
 
   Wire.requestFrom(deviceAddress, 2); // request two bytes
@@ -74,30 +98,50 @@ int readWordWaitI2C(int deviceAddress) {
   unsigned char lsb = Wire.read();
   return (((int)msb<<8) | ((int)lsb));
 }
+*/
 
 int readReverseWordI2C(int deviceAddress) {
 
   Wire.requestFrom(deviceAddress, 2);
+#if defined(ARDUINO) && ARDUINO >= 100
   byte lowerByte = Wire.read();
   return (Wire.read() << 8) | lowerByte;
+#else
+  byte lowerByte = Wire.receive();
+  return (Wire.receive() << 8) | lowerByte;
+#endif
+  
 }
 
 byte readWhoI2C(int deviceAddress) {
 
   // read the ID of the I2C device
   Wire.beginTransmission(deviceAddress);
-  Wire.write((byte)0);
+#if defined(ARDUINO) && ARDUINO >= 100
+    Wire.write((byte)0);
+    Wire.endTransmission();
+    delay(100);
+    Wire.requestFrom(deviceAddress, 1);
+    return Wire.read();
+#else
+    Wire.send((byte)0);
   Wire.endTransmission();
   delay(100);
   Wire.requestFrom(deviceAddress, 1);
-  return Wire.read();
+  return Wire.receive();
+#endif
 }
 
 void updateRegisterI2C(int deviceAddress, byte dataAddress, byte dataValue) {
 
-  Wire.beginTransmission(deviceAddress);
-  Wire.write(dataAddress);
-  Wire.write(dataValue);
+    Wire.beginTransmission(deviceAddress);
+#if defined(ARDUINO) && ARDUINO >= 100
+    Wire.write(dataAddress);
+    Wire.write(dataValue);
+#else
+    Wire.send(dataAddress);
+    Wire.send(dataValue);
+#endif
   Wire.endTransmission();
 }  
 
