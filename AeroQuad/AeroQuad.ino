@@ -48,6 +48,12 @@
   #error "Receiver SWBUS and SlowTelemetry are in conflict for Seria2, they can't be used together"
 #endif
 
+// Special motor config additionnal variable
+#if defined quadXHT_FPVConfig
+ #define quadXConfig
+ #define FRONT_YAW_CORRECTION 0.75
+#endif
+
 //
 // In order to use the DIYDrone libraries, this have to be declared here this way
 // @see Kenny9999 for details
@@ -63,6 +69,7 @@
   FastSerialPort2(Serial2);
   FastSerialPort3(Serial3);
 #endif
+
 
 #include <EEPROM.h>
 #include <Wire.h>
@@ -1251,6 +1258,11 @@
   #include "AeroQuad_STM32.h"
 #endif
 
+// default to 10bit ADC (AVR)
+#ifndef ADC_NUMBER_OF_BITS
+#define ADC_NUMBER_OF_BITS 10
+#endif
+
 //********************************************************
 //****************** KINEMATICS DECLARATION **************
 //********************************************************
@@ -1406,6 +1418,8 @@
     #undef OSD_SYSTEM_MENU  // can't use menu system without an OSD
 #endif
 
+
+
 //********************************************************
 //****************** SERIAL PORT DECLARATION *************
 //********************************************************
@@ -1430,6 +1444,9 @@
 #endif
 
 
+
+
+
 // Include this last as it contains objects from above declarations
 #include "AltitudeControlProcessor.h"
 #include "FlightControlProcessor.h"
@@ -1441,6 +1458,15 @@
   #include "LedStatusProcessor.h"
 #endif  
 
+#if defined MavLink
+  #include "MavLink.h"
+  // MavLink 0.9 
+  #include "../mavlink/include/mavlink/v0.9/common/mavlink.h"   
+  // MavLink 1.0 DKP - need to get here.
+  //#include "../mavlink/include/mavlink/v1.0/common/mavlink.h" 
+#endif
+
+
 
 /**
  * Main setup function, called one time at bootup
@@ -1451,7 +1477,11 @@ void setup() {
   SERIAL_BEGIN(BAUD);
   pinMode(LED_Green, OUTPUT);
   digitalWrite(LED_Green, LOW);
-  
+
+  #ifdef MavLink
+    sendSerialBoot();
+  #endif
+
   // Read user values from EEPROM
   readEEPROM(); // defined in DataStorage.h
   if (readFloat(SOFTWARE_VERSION_ADR) != SOFTWARE_VERSION) { // If we detect the wrong soft version, we init all parameters
@@ -1621,12 +1651,18 @@ void loop () {
     // Combines external pilot commands and measured sensor data to generate motor commands
     processFlightControl();
     
-    #ifdef BinaryWrite
-      if (fastTransfer == ON) {
-        // write out fastTelemetry to Configurator or openLog
-        fastTelemetry();
-      }
+    #if defined BinaryWrite && !defined MavLink
+        if (fastTransfer == ON) {
+          // write out fastTelemetry to Configurator or openLog
+          fastTelemetry();
+        }
+    #endif      
+    #ifdef MavLink
+        //sendSerialHudData();
+        //sendSerialAttitude(); // Defined in MavLink.pde
+        //sendSerialGpsPostion();
     #endif
+    
 
     #ifdef SlowTelemetry
       updateSlowTelemetry100Hz();
@@ -1664,6 +1700,11 @@ void loop () {
       
       #if defined(CameraControl)
         moveCamera(kinematicsAngle[YAXIS],kinematicsAngle[XAXIS],kinematicsAngle[ZAXIS]);
+      #endif
+      
+      #ifdef MavLink
+        readSerialCommand();
+        sendSerialTelemetry();
       #endif
     }
 
