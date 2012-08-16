@@ -31,6 +31,9 @@
 
 char queryType = 'X';
 
+void initCommunication() {
+  // do nothing here for now
+}
 
 //***************************************************************************************************
 //********************************** Serial Commands ************************************************
@@ -41,7 +44,8 @@ bool validateCalibrateCommand(byte command)
     motorArmed = OFF;
     calibrateESC = command;
     return true;
-  } else {
+  } 
+  else {
     calibrateESC = 0;
     testCommand = 1000;
     return false;
@@ -53,7 +57,7 @@ void readSerialPID(unsigned char PIDid) {
   pid->P = readFloatSerial();
   pid->I = readFloatSerial();
   pid->D = readFloatSerial();
-  pid->lastPosition = 0;
+  pid->lastError = 0;
   pid->integratedError = 0;
 }
 
@@ -63,8 +67,9 @@ void readSerialCommand() {
     queryType = SERIAL_READ();
     switch (queryType) {
     case 'A': // Receive roll and pitch rate mode PID
-      readSerialPID(XAXIS);
+      readSerialPID(RATE_XAXIS_PID_IDX);
       readSerialPID(RATE_YAXIS_PID_IDX);
+      rotationSpeedFactor = readFloatSerial();
       break;
       
     case 'B': // Receive roll/pitch attitude mode PID
@@ -99,7 +104,6 @@ void readSerialCommand() {
       break;
       
     case 'E': // Receive sensor filtering values
-      gyroSmoothFactor = readFloatSerial();
       aref = readFloatSerial();
       minArmedThrottle = readFloatSerial();
       break;
@@ -178,7 +182,7 @@ void readSerialCommand() {
       #ifdef BattMonitor
         batteryMonitorAlarmVoltage = readFloatSerial();
         batteryMonitorThrottleTarget = readFloatSerial();
-        batteryMonitorGoinDownTime = readFloatSerial();
+        batteryMonitorGoingDownTime = readFloatSerial();
         setBatteryCellVoltageThreshold(batteryMonitorAlarmVoltage);
       #else
         readFloatSerial();
@@ -347,6 +351,7 @@ void sendSerialTelemetry() {
   case 'a': // Send roll and pitch rate mode PID values
     PrintPID(RATE_XAXIS_PID_IDX);
     PrintPID(RATE_YAXIS_PID_IDX);
+    PrintValueComma(rotationSpeedFactor);
     SERIAL_PRINTLN();
     queryType = 'X';
     break;
@@ -391,7 +396,6 @@ void sendSerialTelemetry() {
     break;
     
   case 'e': // miscellaneous config values
-    PrintValueComma(gyroSmoothFactor);
     PrintValueComma(aref);
     SERIAL_PRINTLN(minArmedThrottle);
     queryType = 'X';
@@ -490,7 +494,7 @@ void sendSerialTelemetry() {
     #ifdef BattMonitor
       PrintValueComma(batteryMonitorAlarmVoltage);
       PrintValueComma(batteryMonitorThrottleTarget);
-      SERIAL_PRINTLN(batteryMonitorGoinDownTime);
+      SERIAL_PRINTLN(batteryMonitorGoingDownTime);
     #else
       PrintValueComma(0);
       PrintValueComma(0);
@@ -567,7 +571,6 @@ void sendSerialTelemetry() {
     #endif
     #if defined AltitudeHoldBaro || defined AltitudeHoldRangeFinder
       #if defined AltitudeHoldBaro
-//        PrintValueComma(getBaroAltitude());
         PrintValueComma(getBaroAltitude());
       #elif defined AltitudeHoldRangeFinder
         PrintValueComma(rangeFinderRange[ALTITUDE_RANGE_FINDER_INDEX] != INVALID_RANGE ? rangeFinderRange[ALTITUDE_RANGE_FINDER_INDEX] : 0.0);
