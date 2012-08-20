@@ -23,7 +23,7 @@
 
 #include <WProgram.h>
 #include "Motors.h"
-
+/*
 #define MOTORPIN1 12
 #define MOTORPIN2 11
 #define MOTORPIN3 27
@@ -32,6 +32,18 @@
 #define MOTORPIN6 3
 #define MOTORPIN7 -1
 #define MOTORPIN8 -1
+*/
+
+#define MOTORPIN1 27
+#define MOTORPIN2 11
+#define MOTORPIN3 2
+#define MOTORPIN4 2
+#define MOTORPIN5 28
+#define MOTORPIN6 3
+#define MOTORPIN7 -1
+#define MOTORPIN8 -1
+
+
 
 void initializeMotors(byte numbers) {
 
