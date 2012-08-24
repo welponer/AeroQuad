@@ -1562,6 +1562,9 @@ void loop () {
     // Evaluate are here because we want it to be synchronized with the processFlightControl
     #if defined(AltitudeHoldBaro)
       measureBaroSum(); 
+//      if (frameCounter % THROTTLE_ADJUST_TASK_SPEED == 0) {  //  50 Hz tasks
+//        evaluateBaroAltitude();
+//      }
     #endif
           
     // Combines external pilot commands and measured sensor data to generate motor commands
@@ -1588,10 +1591,6 @@ void loop () {
 
       // Reads external pilot commands and performs functions based on stick configuration
       readPilotCommands(); 
-      
-      #if defined(AltitudeHoldBaro)
-        evaluateBaroAltitude();
-      #endif
       
       #if defined(UseAnalogRSSIReader) || defined(UseEzUHFRSSIReader)
         readRSSI();
