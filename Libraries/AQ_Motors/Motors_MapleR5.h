@@ -24,11 +24,11 @@
 #include <WProgram.h>
 #include "Motors.h"
 /*
-#define MOTORPIN1 12
+#define MOTORPIN1 27
 #define MOTORPIN2 11
-#define MOTORPIN3 27
+#define MOTORPIN3 2
 #define MOTORPIN4 28
-#define MOTORPIN5 2
+#define MOTORPIN5 12
 #define MOTORPIN6 3
 #define MOTORPIN7 -1
 #define MOTORPIN8 -1
