@@ -1008,14 +1008,12 @@
   void initPlatformEEPROM(void) {
     flightMode = ATTITUDE_FLIGHT_MODE;
     headingHoldConfig = ON;
+    
     for (byte channel = XAXIS; channel < LASTCHANNEL; channel++) {
       receiverSlope[channel] = 1.0;
       receiverOffset[channel] = 0.0;
       receiverSmoothFactor[channel] = 1.0;
     }
-    receiverSmoothFactor[ZAXIS] = 0.5;
-    receiverSlope[THROTTLE] = 0.5;
-    receiverOffset[THROTTLE] = 500.0;
      
     //accelScaleFactor[XAXIS] = G_2_MPS2(1.0/4096.0);  //  g per LSB @ +/- 2g range
     accelScaleFactor[XAXIS] = G_2_MPS2(1.0/2048.0);  //  g per LSB @ +/- 4g range
@@ -1077,6 +1075,7 @@
 
   // Gyroscope declaration
   #define ITG3200_ADDRESS_ALTERNATE
+  #define ITG3200_CSG
   #include <Gyroscope_ITG3200.h>
 
   // Accelerometer declaration
@@ -1132,20 +1131,43 @@
   void initPlatformEEPROM(void) {
     #define INIT_PLATFORM_EEPROM
     flightMode = ATTITUDE_FLIGHT_MODE;
-    headingHoldConfig = ON;
+    headingHoldConfig = OFF;  // ON
+    
     for (byte channel = XAXIS; channel < LASTCHANNEL; channel++) {
       receiverSlope[channel] = 0.3106;
       receiverOffset[channel] = 863.77;
       receiverSmoothFactor[channel] = 1.0;
     }
-    //receiverSmoothFactor[ZAXIS] = 0.5;
-    //receiverSlope[THROTTLE] = 0.5*0.3106;
-    //receiverOffset[THROTTLE] = 500.0+863.77;
      
     //accelScaleFactor[XAXIS] = G_2_MPS2(1.0/4096.0);  //  g per LSB @ +/- 2g range
     accelScaleFactor[XAXIS] = G_2_MPS2(1.0/2048.0);  //  g per LSB @ +/- 4g range
     accelScaleFactor[YAXIS] = accelScaleFactor[XAXIS];
     accelScaleFactor[ZAXIS] = accelScaleFactor[XAXIS];
+    
+    PID[RATE_XAXIS_PID_IDX].P = 50.0;
+    PID[RATE_XAXIS_PID_IDX].I = 0.0;
+    PID[RATE_XAXIS_PID_IDX].D = 0.0*-5.0*PID[RATE_XAXIS_PID_IDX].P;
+    PID[RATE_YAXIS_PID_IDX].P = PID[RATE_XAXIS_PID_IDX].P;
+    PID[RATE_YAXIS_PID_IDX].I = PID[RATE_XAXIS_PID_IDX].I;
+    PID[RATE_YAXIS_PID_IDX].D = PID[RATE_XAXIS_PID_IDX].D;
+    PID[ZAXIS_PID_IDX].P = 2*PID[RATE_XAXIS_PID_IDX].P;
+    PID[ZAXIS_PID_IDX].I = 0.0*5.0;
+    PID[ZAXIS_PID_IDX].D = -4*PID[ZAXIS_PID_IDX].P;
+    PID[ATTITUDE_XAXIS_PID_IDX].P = PID[RATE_XAXIS_PID_IDX].P/10;
+    PID[ATTITUDE_XAXIS_PID_IDX].I = 0;
+    PID[ATTITUDE_XAXIS_PID_IDX].D = 0.0;
+    PID[ATTITUDE_YAXIS_PID_IDX].P = PID[ATTITUDE_XAXIS_PID_IDX].P;
+    PID[ATTITUDE_YAXIS_PID_IDX].I = PID[ATTITUDE_XAXIS_PID_IDX].I;
+    PID[ATTITUDE_YAXIS_PID_IDX].D = PID[ATTITUDE_XAXIS_PID_IDX].D;
+  /*  PID[HEADING_HOLD_PID_IDX].P = 3.0;
+    PID[HEADING_HOLD_PID_IDX].I = 0.1;
+    PID[HEADING_HOLD_PID_IDX].D = 0.0;  
+    PID[ATTITUDE_GYRO_XAXIS_PID_IDX].P = PID[RATE_XAXIS_PID_IDX].P - 10;
+    PID[ATTITUDE_GYRO_XAXIS_PID_IDX].I = PID[RATE_XAXIS_PID_IDX].I ;
+    PID[ATTITUDE_GYRO_XAXIS_PID_IDX].D = PID[RATE_XAXIS_PID_IDX].D;
+    PID[ATTITUDE_GYRO_YAXIS_PID_IDX].P = PID[RATE_YAXIS_PID_IDX].P - 10;
+    PID[ATTITUDE_GYRO_YAXIS_PID_IDX].I = PID[RATE_YAXIS_PID_IDX].I;
+    PID[ATTITUDE_GYRO_YAXIS_PID_IDX].D = PID[RATE_YAXIS_PID_IDX].D; */
   }
 
   /**
