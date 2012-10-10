@@ -36,7 +36,7 @@
 
 #define MOTORPIN1 27
 #define MOTORPIN2 11
-#define MOTORPIN3 2
+#define MOTORPIN3 12
 #define MOTORPIN4 2
 #define MOTORPIN5 28
 #define MOTORPIN6 3
