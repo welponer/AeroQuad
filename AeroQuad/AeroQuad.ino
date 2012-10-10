@@ -27,6 +27,7 @@
 *****************************************************************************/
 
 #include "UserConfiguration.h" // Edit this file first before uploading to the AeroQuad
+#include <stdlib.h>    // for Maple STM32
 
 //
 // Define Security Checks
@@ -48,13 +49,9 @@
   #error "Receiver SWBUS and SlowTelemetry are in conflict for Seria2, they can't be used together"
 #endif
 
-// Special motor config additionnal variable
-#if defined(quadXHT_FPVConfig)
- #define quadXConfig
- #define FRONT_YAW_CORRECTION 0.95
- #define REAR_YAW_CORRECTION 1.17
-#endif
-
+#if defined (CameraTXControl) && !defined (CameraControl)
+  #error "CameraTXControl need to have CameraControl defined"
+#endif 
 
 #include <EEPROM.h>
 #include <Wire.h>
@@ -1260,6 +1257,9 @@
   #include <CameraStabilizer_Aeroquad.h>
 #endif
 
+#if defined (CameraTXControl)
+  #include <CameraStabilizer_TXControl.h>
+#endif
 
 //********************************************************
 //******** FLIGHT CONFIGURATION DECLARATION **************
@@ -1563,12 +1563,17 @@ void process50HzTask() {
   #if defined(CameraControl)
     moveCamera(kinematicsAngle[YAXIS],kinematicsAngle[XAXIS],kinematicsAngle[ZAXIS]);
   #endif      
+  
+  #if defined CameraTXControl
+    processCameraTXControl();
+  #endif
 
-    #ifdef MAX7456_OSD
+
+  #ifdef MAX7456_OSD
     #ifdef OSD50HZ
       updateOSD();
     #endif
-    #endif
+  #endif
     
 }
 
