@@ -1071,7 +1071,7 @@
 
   // Heading mag hold declaration
   #ifdef HeadingMagHold
-    #define SPARKFUN_9DOF_5883L
+//    #define SPARKFUN_9DOF_5883L
     #define HMC5883L
     #include <Magnetometer_HMC5883L.h>
   #endif
