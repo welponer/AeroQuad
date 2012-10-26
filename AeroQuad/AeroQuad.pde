@@ -1055,7 +1055,6 @@
 
   // Gyroscope declaration
   #define ITG3200_ADDRESS_ALTERNATE
-  #define ITG3200_CSG
   #include <Gyroscope_ITG3200.h>
 
   // Accelerometer declaration
@@ -1073,13 +1072,13 @@
   // Heading mag hold declaration
   #ifdef HeadingMagHold
     #define SPARKFUN_9DOF_5883L
-    #define HMC588L
+    #define HMC5883L
     #include <Magnetometer_HMC5883L.h>
   #endif
+  
   #ifdef AltitudeHoldRangeFinder
     #define XLMAXSONAR 
   #endif
-
 
   // Altitude declaration
   #ifdef AltitudeHoldBaro
@@ -1121,8 +1120,8 @@
      
     //accelScaleFactor[XAXIS] = G_2_MPS2(1.0/4096.0);  //  g per LSB @ +/- 2g range
     accelScaleFactor[XAXIS] = G_2_MPS2(1.0/2048.0);  //  g per LSB @ +/- 4g range
-    accelScaleFactor[YAXIS] = accelScaleFactor[XAXIS];
-    accelScaleFactor[ZAXIS] = accelScaleFactor[XAXIS];
+    accelScaleFactor[YAXIS] = -accelScaleFactor[XAXIS];
+    accelScaleFactor[ZAXIS] = -accelScaleFactor[XAXIS];
     
     PID[RATE_XAXIS_PID_IDX].P = 50.0;
     PID[RATE_XAXIS_PID_IDX].I = 0.0;
