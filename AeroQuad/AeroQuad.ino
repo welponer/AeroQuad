@@ -1071,7 +1071,7 @@
 
   // Heading mag hold declaration
   #ifdef HeadingMagHold
-    #define SPARKFUN_9DOF_5883L
+//    #define SPARKFUN_9DOF_5883L
     #define HMC5883L
     #include <Magnetometer_HMC5883L.h>
   #endif
@@ -1104,7 +1104,8 @@
     pinMode(LED_Yellow, OUTPUT);
     pinMode(LED_Green, OUTPUT);
 
-    Wire.begin( 0, PORTI2C2, I2C_FAST_MODE);
+    //Wire.begin( 0, PORTI2C1, I2C_FAST_MODE);
+    Wire.begin(5, 9);
   }
   
   void initPlatformEEPROM(void) {
