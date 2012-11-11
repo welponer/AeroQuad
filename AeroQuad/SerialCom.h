@@ -89,7 +89,7 @@ void readSerialCommand() {
     case 'C': // Receive yaw PID
       readSerialPID(ZAXIS_PID_IDX);
       readSerialPID(HEADING_HOLD_PID_IDX);
-      readFloatSerial();
+      headingHoldConfig = readFloatSerial();
       break;
 
     case 'D': // Altitude hold PID
@@ -422,6 +422,7 @@ void sendSerialTelemetry() {
     for (byte axis = XAXIS; axis < LASTCHANNEL; axis++) {
       PrintValueComma(receiverSmoothFactor[axis]);
     }
+	PrintDummyValues(10 - LASTCHANNEL);
     SERIAL_PRINTLN();
     queryType = 'X';
     break;
@@ -583,10 +584,9 @@ void sendSerialTelemetry() {
       PrintValueComma(0);
     #endif
 
-    for (byte channel = XAXIS; channel < LASTCHANNEL; channel++) {
-      PrintValueComma(receiverCommand[channel]);
+    for (byte channel = 0; channel < 8; channel++) { // Configurator expects 8 values
+      PrintValueComma((channel < LASTCHANNEL) ? receiverCommand[channel] : 0);
     }
-    PrintDummyValues(8 - LASTCHANNEL); // max of 8 transmitter channel supported
 
     for (byte motor = 0; motor < LASTMOTOR; motor++) {
       PrintValueComma(motorCommand[motor]);
@@ -649,6 +649,7 @@ void sendSerialTelemetry() {
       PrintDummyValues(11);
     #endif    
     SERIAL_PRINTLN();
+    break;
 
   case 'x': // Stop sending messages
     break;
@@ -884,9 +885,8 @@ void reportVehicleState() {
     SERIAL_PRINTLN("Octo X8");
   #elif defined(octoXConfig)
     SERIAL_PRINTLN("Octo X");
-  // *** For next rev, updat OctoPlus config name here and in Configurator
   #elif defined(octoPlusConfig)
-    SERIAL_PRINTLN("Octo X+");
+    SERIAL_PRINTLN("Octo +");
   #endif
 
   SERIAL_PRINT("Receiver Channels: ");

@@ -1054,11 +1054,11 @@
   #include <Device_I2C.h>
 
   // Gyroscope declaration
-  #define ITG3200_ADDRESS_ALTERNATE
+  //#define ITG3200_ADDRESS_ALTERNATE       // for CSG
   #include <Gyroscope_ITG3200.h>
 
   // Accelerometer declaration
-  #define BMA180_ADDRESS_ALTERNATE
+  //#define BMA180_ADDRESS_ALTERNATE        // for CSG
   #include <Accelerometer_BMA180.h>
 
   // Receiver Declaration
@@ -1082,7 +1082,8 @@
 
   // Altitude declaration
   #ifdef AltitudeHoldBaro
-    #define BMP085
+    //#define BMP085              // for CSG
+    #define MS5611
   #endif
 
   // Battery monitor declaration
@@ -1104,8 +1105,8 @@
     pinMode(LED_Yellow, OUTPUT);
     pinMode(LED_Green, OUTPUT);
 
-    //Wire.begin( 0, PORTI2C1, I2C_FAST_MODE);
-    Wire.begin(5, 9);
+    Wire.begin( 0, PORTI2C1, I2C_FAST_MODE);
+    //Wire.begin(5, 9);
   }
   
   void initPlatformEEPROM(void) {
